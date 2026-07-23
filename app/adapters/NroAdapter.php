@@ -46,7 +46,7 @@ class NroAdapter implements GameAdapter
             if ($this->accountExists($db, $username)) {
                 return [true, 'Tài khoản đã tồn tại'];
             }
-            $st = $db->prepare('INSERT INTO account (username, password) VALUES (?, ?)');
+            $st = $db->prepare("INSERT INTO account (username, password, email, token, xsrf_token, newpass) VALUES (?, ?, '', '', '', '')");
             $st->execute([$username, $plainPassword]);
             return [true, 'Đã tạo tài khoản game'];
         } catch (Throwable $e) {

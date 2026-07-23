@@ -4,6 +4,8 @@
 -- Import: mysql -u root gate_portal < database/schema.sql
 -- =====================================================
 
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS `gate_portal` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `gate_portal`;
 

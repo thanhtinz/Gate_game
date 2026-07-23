@@ -47,7 +47,7 @@ class AvatarAdapter implements GameAdapter
                 return [true, 'Tài khoản đã tồn tại'];
             }
             $db->beginTransaction();
-            $st = $db->prepare('INSERT INTO users (username, password, active, timeCreate) VALUES (?, ?, 1, NOW())');
+            $st = $db->prepare("INSERT INTO users (username, password, gmail, vnd, tongnap, active, timeCreate) VALUES (?, ?, '', 0, 0, 1, NOW())");
             $st->execute([$username, md5($plainPassword)]);
             $uid = (int)$db->lastInsertId();
             // Tạo sẵn nhân vật (1 tài khoản = 1 nhân vật)
