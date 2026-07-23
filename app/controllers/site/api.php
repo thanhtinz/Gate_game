@@ -30,12 +30,10 @@ function api_characters(): void
     try {
         $adapter = AdapterRegistry::forGame($server['adapter']);
         $pdo = GameDB::forServer($server);
-        // Tự tạo tài khoản game nếu chưa có (đăng ký lúc server offline / server mới thêm)
-        if (!$adapter->accountExists($pdo, $me['username']) && !empty($me['game_secret'])) {
-            $plain = Crypto::decrypt($me['game_secret']);
-            if ($plain !== null) {
-                $adapter->ensureAccount($pdo, $me['username'], $plain);
-            }
+        // Tự tạo "vỏ" tài khoản trong DB game nếu chưa có (mật khẩu ngẫu nhiên —
+        // không dùng để đăng nhập vì game xác thực qua API auth tập trung)
+        if (!$adapter->accountExists($pdo, $me['username'])) {
+            $adapter->ensureAccount($pdo, $me['username'], bin2hex(random_bytes(16)));
         }
         $chars = $adapter->getCharacters($pdo, $me['username']);
         json_out(['success' => true, 'characters' => $chars]);

@@ -72,6 +72,20 @@
     </div>
   </div>
 
+  <div class="card">
+    <h2 class="card-title">🔐 Auth tập trung cho game server</h2>
+    <div class="form-group">
+      <label>Central Auth Key (game server gọi API xác thực bằng key này)</label>
+      <input type="text" name="central_auth_key" value="<?= e($settings['central_auth_key'] ?? '') ?>" autocomplete="off" placeholder="Chuỗi ngẫu nhiên 32+ ký tự">
+    </div>
+    <div class="alert alert-info">
+      <strong>API URL:</strong>
+      <code><?= e((isset($_SERVER['HTTP_HOST']) ? ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']) : '') . url('/api/game-auth/verify')) ?></code><br>
+      Điền URL này + key trên vào <code>Config.properties</code> (NRO) và <code>config.properties</code> (Avatar) của từng game server
+      (<code>auth.enabled / auth.url / auth.key</code>). Để trống key = tắt API (game server tự fallback về đăng nhập cũ).
+    </div>
+  </div>
+
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">Lưu cấu hình</button>
   </div>

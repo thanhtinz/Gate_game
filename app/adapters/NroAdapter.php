@@ -54,11 +54,6 @@ class NroAdapter implements GameAdapter
         }
     }
 
-    public function syncPassword(PDO $db, string $username, string $plainPassword): bool
-    {
-        $st = $db->prepare('UPDATE account SET password = ? WHERE username = ?');
-        return $st->execute([$plainPassword, $username]);
-    }
 
     public function getCharacters(PDO $db, string $username): array
     {

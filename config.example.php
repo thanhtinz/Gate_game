@@ -12,8 +12,8 @@ return [
         'pass' => '',
     ],
 
-    // Khoá bí mật của ứng dụng: dùng mã hoá mật khẩu game + CSRF.
-    // Sinh chuỗi ngẫu nhiên dài 32+ ký tự, KHÔNG dùng giá trị mặc định.
+    // Khoá bí mật dự phòng của ứng dụng (không bắt buộc với auth tập trung).
+    // Nên đặt chuỗi ngẫu nhiên 32+ ký tự.
     'app_key' => 'CHANGE_ME_TO_A_RANDOM_32_CHAR_STRING',
 
     // Đường dẫn gốc nếu web đặt trong thư mục con, vd '/portal'. Để '' nếu ở gốc domain.

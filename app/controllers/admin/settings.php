@@ -28,6 +28,7 @@ function admin_settings_save(): void
     Settings::set('sepay_account_name', trim((string)post('sepay_account_name')));
     Settings::set('sepay_prefix', strtoupper(trim((string)post('sepay_prefix'))));
     Settings::set('sepay_api_key', trim((string)post('sepay_api_key')));
+    Settings::set('central_auth_key', trim((string)post('central_auth_key')));
 
     flash_set('success', 'Đã lưu cấu hình.');
     redirect('/admin/settings');

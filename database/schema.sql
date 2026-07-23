@@ -15,8 +15,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` VARCHAR(20) NOT NULL UNIQUE,
   `email` VARCHAR(100) DEFAULT NULL,
   `phone` VARCHAR(15) DEFAULT NULL,
-  `password` VARCHAR(255) NOT NULL,            -- bcrypt
-  `game_secret` TEXT DEFAULT NULL,             -- mật khẩu game mã hoá AES (để tự tạo tài khoản trong DB game)
+  `password` VARCHAR(255) NOT NULL,            -- bcrypt (nguồn auth duy nhất cho web + mọi game)
   `xu` BIGINT NOT NULL DEFAULT 0,              -- số dư xu trên web
   `tong_nap` BIGINT NOT NULL DEFAULT 0,        -- tổng tiền đã nạp (VND)
   `role` TINYINT NOT NULL DEFAULT 0,           -- 0: user, 1: admin
@@ -213,7 +212,8 @@ INSERT INTO `settings` (`k`,`v`) VALUES
 ('sepay_account', ''),
 ('sepay_account_name', ''),
 ('sepay_prefix', 'GATE'),
-('sepay_api_key', '')
+('sepay_api_key', ''),
+('central_auth_key', '')                -- key để game server gọi API /api/game-auth/verify
 ON DUPLICATE KEY UPDATE `k` = `k`;
 
 -- 2 game mặc định (sửa lại thông tin trong admin)

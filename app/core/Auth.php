@@ -1,5 +1,10 @@
 <?php
-/** Đăng nhập/đăng ký cổng game + đồng bộ tài khoản xuống DB các game */
+/**
+ * Auth tập trung: tài khoản CHỈ nằm ở DB cổng (bcrypt).
+ * Game server xác thực qua API /api/game-auth/verify — web không còn
+ * ghi/đồng bộ mật khẩu xuống DB game. Dòng account trong DB game chỉ là
+ * "vỏ chứa dữ liệu nhân vật", được game server hoặc cổng tự tạo khi cần.
+ */
 class Auth
 {
     public static function user(): ?array
@@ -55,10 +60,6 @@ class Auth
         session_regenerate_id(true);
         $_SESSION['uid'] = (int)$u['id'];
         DB::update('users', ['last_login' => date('Y-m-d H:i:s')], 'id = ?', [$u['id']]);
-        // Cập nhật secret nếu chưa có (tài khoản tạo trước khi có tính năng sync)
-        if (empty($u['game_secret'])) {
-            DB::update('users', ['game_secret' => Crypto::encrypt($password)], 'id = ?', [$u['id']]);
-        }
         return true;
     }
 
@@ -69,7 +70,7 @@ class Auth
     }
 
     /**
-     * Đăng ký: tạo user cổng + tạo tài khoản game trên tất cả server đang hoạt động.
+     * Đăng ký tài khoản cổng (dùng chung cho web + mọi game).
      * Trả về [ok, message, warnings[]]
      */
     public static function register(string $username, string $password, string $email = '', string $phone = ''): array
@@ -84,7 +85,8 @@ class Auth
             return [false, 'Tên tài khoản đã tồn tại.', []];
         }
 
-        // Kiểm tra trùng username trong DB các game (tài khoản in-game có sẵn của người khác)
+        // Chặn trùng với tài khoản in-game có sẵn (tài khoản cũ của người khác
+        // vẫn đăng nhập game qua chế độ fallback — không cho chiếm username đó)
         foreach (self::activeServers() as $srv) {
             try {
                 $adapter = AdapterRegistry::forGame($srv['adapter']);
@@ -93,7 +95,7 @@ class Auth
                     return [false, "Tên tài khoản đã tồn tại trong game {$srv['game_name']} ({$srv['name']}). Vui lòng chọn tên khác.", []];
                 }
             } catch (Throwable $e) {
-                // server game offline: bỏ qua, sẽ tự tạo khi truy cập sau
+                // server game offline: bỏ qua kiểm tra
             }
         }
 
@@ -102,43 +104,14 @@ class Auth
             'email' => $email ?: null,
             'phone' => $phone ?: null,
             'password' => password_hash($password, PASSWORD_BCRYPT),
-            'game_secret' => Crypto::encrypt($password),
         ]);
 
-        $warnings = self::provisionGameAccounts($uid);
         $_SESSION['uid'] = $uid;
         session_regenerate_id(true);
-        return [true, 'Đăng ký thành công!', $warnings];
+        return [true, 'Đăng ký thành công!', []];
     }
 
-    /** Tạo tài khoản game trên mọi server đang hoạt động (bỏ qua server lỗi) */
-    public static function provisionGameAccounts(int $userId): array
-    {
-        $u = DB::one('SELECT * FROM users WHERE id = ?', [$userId]);
-        if (!$u || empty($u['game_secret'])) {
-            return ['Không có mật khẩu game để đồng bộ.'];
-        }
-        $plain = Crypto::decrypt($u['game_secret']);
-        if ($plain === null) {
-            return ['Không giải mã được mật khẩu game (app_key thay đổi?).'];
-        }
-        $warnings = [];
-        foreach (self::activeServers() as $srv) {
-            try {
-                $adapter = AdapterRegistry::forGame($srv['adapter']);
-                $pdo = GameDB::forServer($srv);
-                [$ok, $msg] = $adapter->ensureAccount($pdo, $u['username'], $plain);
-                if (!$ok) {
-                    $warnings[] = "{$srv['game_name']} - {$srv['name']}: $msg";
-                }
-            } catch (Throwable $e) {
-                $warnings[] = "{$srv['game_name']} - {$srv['name']}: không kết nối được server.";
-            }
-        }
-        return $warnings;
-    }
-
-    /** Đổi mật khẩu web + đồng bộ xuống DB tất cả game */
+    /** Đổi mật khẩu web — game xác thực qua API nên không cần đồng bộ gì thêm */
     public static function changePassword(int $userId, string $newPassword): array
     {
         $u = DB::one('SELECT * FROM users WHERE id = ?', [$userId]);
@@ -150,24 +123,8 @@ class Auth
         }
         DB::update('users', [
             'password' => password_hash($newPassword, PASSWORD_BCRYPT),
-            'game_secret' => Crypto::encrypt($newPassword),
         ], 'id = ?', [$userId]);
-
-        $warnings = [];
-        foreach (self::activeServers() as $srv) {
-            try {
-                $adapter = AdapterRegistry::forGame($srv['adapter']);
-                $pdo = GameDB::forServer($srv);
-                if ($adapter->accountExists($pdo, $u['username'])) {
-                    $adapter->syncPassword($pdo, $u['username'], $newPassword);
-                } else {
-                    $adapter->ensureAccount($pdo, $u['username'], $newPassword);
-                }
-            } catch (Throwable $e) {
-                $warnings[] = "{$srv['game_name']} - {$srv['name']}: chưa đồng bộ được (server lỗi).";
-            }
-        }
-        return [true, 'Đổi mật khẩu thành công.', $warnings];
+        return [true, 'Đổi mật khẩu thành công. Mật khẩu mới dùng cho cả web và các game.', []];
     }
 
     /** Danh sách server đang hoạt động của các game đang hoạt động */

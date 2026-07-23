@@ -62,11 +62,6 @@ class AvatarAdapter implements GameAdapter
         }
     }
 
-    public function syncPassword(PDO $db, string $username, string $plainPassword): bool
-    {
-        $st = $db->prepare('UPDATE users SET password = ? WHERE username = ?');
-        return $st->execute([md5($plainPassword), $username]);
-    }
 
     public function getCharacters(PDO $db, string $username): array
     {

@@ -37,6 +37,7 @@ function routes(): array
         'GET /api/giftcode-info'     => ['site/api.php', 'api_giftcode_info'],
         'GET /api/order-status'      => ['site/api.php', 'api_order_status'],
         'POST /api/sepay-webhook'    => ['site/sepay.php', 'sepay_webhook'],
+        'POST /api/game-auth/verify' => ['site/gameauth.php', 'game_auth_verify'],
 
         // Admin
         'GET /admin'                 => ['admin/dashboard.php', 'admin_dashboard'],

@@ -21,8 +21,6 @@ interface GameAdapter
     /** Tạo tài khoản game nếu chưa có. Trả về [ok, message] */
     public function ensureAccount(PDO $db, string $username, string $plainPassword): array;
 
-    /** Đồng bộ mật khẩu mới xuống DB game */
-    public function syncPassword(PDO $db, string $username, string $plainPassword): bool;
 
     /** Danh sách nhân vật của tài khoản: [{id, name, info}] */
     public function getCharacters(PDO $db, string $username): array;
