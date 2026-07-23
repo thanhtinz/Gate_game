@@ -13,6 +13,13 @@
 </div>
 <?php endif; ?>
 
+<div class="quick-actions">
+  <a href="<?= url('/nap-xu') ?>" class="qa-item"><span class="qa-icon">💰</span><b>Nạp xu</b><span class="muted small">QR ngân hàng, tự động 24/7</span></a>
+  <a href="<?= url('/doi-xu') ?>" class="qa-item"><span class="qa-icon">🔄</span><b>Đổi xu</b><span class="muted small">Quy đổi ra tiền tệ game</span></a>
+  <a href="<?= url('/giftcode') ?>" class="qa-item"><span class="qa-icon">🎁</span><b>Giftcode</b><span class="muted small">Nhập code nhận quà</span></a>
+  <a href="<?= url('/bxh') ?>" class="qa-item"><span class="qa-icon">🏆</span><b>Xếp hạng</b><span class="muted small">Đua top mỗi server</span></a>
+</div>
+
 <section class="section">
   <h2 class="section-title">🎮 Danh sách game</h2>
   <div class="game-grid">
