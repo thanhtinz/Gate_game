@@ -87,6 +87,31 @@
   </div>
 
   <div class="card">
+    <h2 class="card-title">🔵 Đăng nhập Google</h2>
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="google_enabled" value="1" <?= ($settings['google_enabled'] ?? '0') === '1' ? 'checked' : '' ?>>
+        Bật đăng nhập / đăng ký bằng Google
+      </label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Client ID</label>
+        <input type="text" name="google_client_id" value="<?= e($settings['google_client_id'] ?? '') ?>" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Client Secret (để trống = giữ nguyên)</label>
+        <input type="password" name="google_client_secret" value="" autocomplete="new-password" placeholder="<?= ($settings['google_client_secret'] ?? '') !== '' ? '••••••••' : '' ?>">
+      </div>
+    </div>
+    <div class="alert alert-info">
+      Tạo OAuth Client tại <strong>Google Cloud Console → APIs &amp; Services → Credentials</strong> (loại Web application).<br>
+      <strong>Authorized redirect URI:</strong>
+      <code><?= e((isset($_SERVER['HTTP_HOST']) ? ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']) : '') . url('/auth/google/callback')) ?></code>
+    </div>
+  </div>
+
+  <div class="card">
     <h2 class="card-title">📧 Email / SMTP & xác minh tài khoản</h2>
     <div class="form-group">
       <label>

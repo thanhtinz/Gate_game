@@ -182,3 +182,13 @@
     }, 5000);
   }
 })();
+
+/* Toggle hiện/ẩn mật khẩu */
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('.pw-toggle');
+  if (!btn) return;
+  var input = document.getElementById(btn.getAttribute('data-target'));
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+  btn.textContent = input.type === 'password' ? '👁' : '🙈';
+});

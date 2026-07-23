@@ -209,3 +209,32 @@ select[disabled] { opacity: .55; }
   .game-hero-info { flex-direction: column; text-align: center; }
   .btn-row { justify-content: center; }
 }
+
+/* ===== Auth pages (redesign) ===== */
+.auth-wrap { display: flex; justify-content: center; padding: 30px 0; }
+.auth-panel { display: grid; grid-template-columns: 340px 1fr; width: 100%; max-width: 860px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+.auth-panel.single { grid-template-columns: 1fr; max-width: 480px; }
+.auth-side { background: linear-gradient(160deg, rgba(79,140,255,.25), rgba(19,26,44,.9)), var(--bg2); border-right: 1px solid var(--border); display: flex; align-items: center; }
+.auth-side-inner { padding: 34px 28px; }
+.auth-side-icon { font-size: 44px; display: block; margin-bottom: 10px; }
+.auth-side h2 { margin-bottom: 8px; }
+.auth-side p { color: var(--muted); font-size: 14px; }
+.auth-perks { list-style: none; margin-top: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+.auth-main { padding: 34px 32px; }
+.auth-main h1 { margin-bottom: 4px; }
+.auth-alt { margin-top: 16px; }
+.auth-divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 16px 0; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #333; border-color: #fff; font-weight: 600; }
+.btn-google:hover { filter: brightness(.95); }
+.field-icon { position: relative; margin: 12px 0; }
+.field-icon .fi { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 15px; opacity: .7; pointer-events: none; }
+.field-icon input { padding-left: 42px; padding-right: 42px; height: 46px; }
+.pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 6px; }
+.pw-toggle:hover { color: var(--text); }
+.auth-main .btn-lg { margin-top: 14px; }
+@media (max-width: 760px) {
+  .auth-panel { grid-template-columns: 1fr; }
+  .auth-side { display: none; }
+  .auth-main { padding: 26px 20px; }
+}

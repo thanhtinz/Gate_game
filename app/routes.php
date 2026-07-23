@@ -19,6 +19,10 @@ function routes(): array
         'GET /dang-ky'               => ['site/auth.php', 'auth_register_form'],
         'POST /dang-ky'              => ['site/auth.php', 'auth_register'],
         'GET /dang-xuat'             => ['site/auth.php', 'auth_logout'],
+        'GET /auth/google'           => ['site/google.php', 'google_start'],
+        'GET /auth/google/callback'  => ['site/google.php', 'google_callback'],
+        'GET /hoan-tat-dang-ky'      => ['site/google.php', 'google_complete_form'],
+        'POST /hoan-tat-dang-ky'     => ['site/google.php', 'google_complete_submit'],
         'GET /tai-khoan'             => ['site/account.php', 'account_index'],
         'POST /doi-mat-khau'         => ['site/account.php', 'account_change_password'],
         'GET /xac-minh-email'        => ['site/account.php', 'account_verify_email'],
@@ -40,6 +44,8 @@ function routes(): array
         'GET /api/order-status'      => ['site/api.php', 'api_order_status'],
         'POST /api/sepay-webhook'    => ['site/sepay.php', 'sepay_webhook'],
         'POST /api/game-auth/verify' => ['site/gameauth.php', 'game_auth_verify'],
+        'POST /api/game-auth/register' => ['site/gameauth.php', 'game_auth_register'],
+        'POST /api/game-auth/change-password' => ['site/gameauth.php', 'game_auth_change_password'],
 
         // Admin
         'GET /admin'                 => ['admin/dashboard.php', 'admin_dashboard'],

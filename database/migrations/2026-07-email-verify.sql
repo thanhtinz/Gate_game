@@ -21,3 +21,9 @@ INSERT INTO `settings` (`k`,`v`) VALUES
 ('smtp_from',''),
 ('smtp_from_name','Gate Game')
 ON DUPLICATE KEY UPDATE `k` = `k`;
+
+-- Google OAuth
+ALTER TABLE `users` ADD COLUMN `google_id` VARCHAR(30) DEFAULT NULL UNIQUE AFTER `email_verified`;
+INSERT INTO `settings` (`k`,`v`) VALUES
+('google_enabled','0'),('google_client_id',''),('google_client_secret','')
+ON DUPLICATE KEY UPDATE `k` = `k`;

@@ -74,6 +74,21 @@ Cách bật (2 game đã được patch sẵn trong repo `Nro` và `Lttt`):
 
 Đăng ký tài khoản mới chỉ thực hiện trên web. Web chặn đăng ký username trùng với tài khoản in-game cũ (tránh chiếm tài khoản fallback của người khác).
 
+## Đăng ký / đổi mật khẩu ngay trong game
+
+Game server gọi API cổng hộ người chơi (đã patch sẵn trong repo `Nro` và `Lttt`):
+
+- `POST /api/game-auth/register` (username, password, email) — đăng ký từ form trong game, cổng tạo tài khoản + gửi mail xác minh, người chơi xác minh xong quay lại game đăng nhập.
+  - Avatar: form đăng ký in-game có sẵn ô email (cmd `-25`).
+  - NRO: RegisterScreen của client Unity đã đổi ô "Mã giới thiệu" thành ô Email (cmd `42`) — cần build lại client Unity.
+- `POST /api/game-auth/change-password` (username, old_password, new_password) — đổi mật khẩu trong game (Avatar cmd `-62`), hiệu lực cho web + mọi game; tài khoản cũ chưa lên cổng thì tự fallback đổi trong DB game như trước.
+
+## Đăng nhập Google
+
+- Admin → **Cấu hình** → mục *Đăng nhập Google*: bật + điền Client ID/Secret (Google Cloud Console → Credentials → OAuth Client, loại Web; redirect URI hiển thị sẵn trong admin).
+- Người mới đăng nhập Google lần đầu sẽ chọn **username + mật khẩu game** ở bước hoàn tất (game đăng nhập bằng username/mật khẩu). Email Google được tính là đã xác minh.
+- Đăng nhập Google với email trùng tài khoản có sẵn sẽ tự liên kết.
+
 ## Xác minh email (thay cơ chế kích hoạt tài khoản của game)
 
 - Đăng ký bắt buộc nhập email → cổng gửi mail chứa link kích hoạt (hiệu lực 24h, gửi lại tối đa 1 lần/phút).

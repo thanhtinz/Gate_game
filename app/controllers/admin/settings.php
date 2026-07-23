@@ -29,6 +29,11 @@ function admin_settings_save(): void
     Settings::set('sepay_prefix', strtoupper(trim((string)post('sepay_prefix'))));
     Settings::set('sepay_api_key', trim((string)post('sepay_api_key')));
     Settings::set('central_auth_key', trim((string)post('central_auth_key')));
+    Settings::set('google_enabled', post('google_enabled') === '1' ? '1' : '0');
+    Settings::set('google_client_id', trim((string)post('google_client_id')));
+    if (trim((string)post('google_client_secret')) !== '') { // để trống = giữ secret cũ
+        Settings::set('google_client_secret', trim((string)post('google_client_secret')));
+    }
     Settings::set('email_verify_required', post('email_verify_required') === '1' ? '1' : '0');
     Settings::set('smtp_host', trim((string)post('smtp_host')));
     Settings::set('smtp_port', trim((string)post('smtp_port')) ?: '587');

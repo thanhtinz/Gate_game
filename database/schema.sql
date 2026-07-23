@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `phone` VARCHAR(15) DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,            -- bcrypt (nguồn auth duy nhất cho web + mọi game)
   `email_verified` TINYINT NOT NULL DEFAULT 0, -- 1 = đã xác minh email (thay cơ chế active của game)
+  `google_id` VARCHAR(30) DEFAULT NULL UNIQUE,   -- Google sub khi đăng nhập bằng Google
   `verify_token` VARCHAR(64) DEFAULT NULL,     -- sha256 của token gửi qua mail
   `verify_expires` DATETIME DEFAULT NULL,
   `verify_sent_at` DATETIME DEFAULT NULL,      -- chống spam gửi lại mail
@@ -226,7 +227,11 @@ INSERT INTO `settings` (`k`,`v`) VALUES
 ('smtp_user', ''),
 ('smtp_pass', ''),
 ('smtp_from', ''),                      -- email người gửi (mặc định = smtp_user)
-('smtp_from_name', 'Gate Game')
+('smtp_from_name', 'Gate Game'),
+-- Đăng nhập Google (OAuth 2.0)
+('google_enabled', '0'),
+('google_client_id', ''),
+('google_client_secret', '')
 ON DUPLICATE KEY UPDATE `k` = `k`;
 
 -- 2 game mặc định (sửa lại thông tin trong admin)

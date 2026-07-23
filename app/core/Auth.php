@@ -70,25 +70,28 @@ class Auth
     }
 
     /**
-     * Đăng ký tài khoản cổng (dùng chung cho web + mọi game).
-     * Trả về [ok, message, warnings[]]
+     * Tạo tài khoản cổng (không đăng nhập session) — dùng chung cho web,
+     * API đăng ký từ game và Google.
+     * Trả về [ok, message, uid|null]
      */
-    public static function register(string $username, string $password, string $email = '', string $phone = ''): array
+    public static function createAccount(string $username, string $password, string $email, array $extra = []): array
     {
+        $username = strtolower(trim($username));
+        $email = trim($email);
         if (!preg_match('/^[a-z0-9_]{4,20}$/i', $username)) {
-            return [false, 'Tên tài khoản 4-20 ký tự, chỉ gồm chữ, số, gạch dưới.', []];
+            return [false, 'Tên tài khoản 4-20 ký tự, chỉ gồm chữ, số, gạch dưới.', null];
         }
         if (strlen($password) < 6 || strlen($password) > 32) {
-            return [false, 'Mật khẩu phải từ 6 đến 32 ký tự.', []];
+            return [false, 'Mật khẩu phải từ 6 đến 32 ký tự.', null];
         }
         if (DB::one('SELECT id FROM users WHERE username = ?', [$username])) {
-            return [false, 'Tên tài khoản đã tồn tại.', []];
+            return [false, 'Tên tài khoản đã tồn tại.', null];
         }
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return [false, 'Vui lòng nhập email hợp lệ (dùng để xác minh và khôi phục tài khoản).', []];
+            return [false, 'Vui lòng nhập email hợp lệ (dùng để xác minh và khôi phục tài khoản).', null];
         }
         if (DB::one('SELECT id FROM users WHERE email = ?', [$email])) {
-            return [false, 'Email này đã được dùng cho tài khoản khác.', []];
+            return [false, 'Email này đã được dùng cho tài khoản khác.', null];
         }
 
         // Chặn trùng với tài khoản in-game có sẵn (tài khoản cũ của người khác
@@ -98,19 +101,31 @@ class Auth
                 $adapter = AdapterRegistry::forGame($srv['adapter']);
                 $pdo = GameDB::forServer($srv);
                 if ($adapter->accountExists($pdo, $username)) {
-                    return [false, "Tên tài khoản đã tồn tại trong game {$srv['game_name']} ({$srv['name']}). Vui lòng chọn tên khác.", []];
+                    return [false, "Tên tài khoản đã tồn tại trong game {$srv['game_name']} ({$srv['name']}). Vui lòng chọn tên khác.", null];
                 }
             } catch (Throwable $e) {
                 // server game offline: bỏ qua kiểm tra
             }
         }
 
-        $uid = DB::insert('users', [
+        $uid = DB::insert('users', array_merge([
             'username' => $username,
-            'email' => $email ?: null,
-            'phone' => $phone ?: null,
+            'email' => $email,
             'password' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
+        ], $extra));
+        return [true, 'Tạo tài khoản thành công.', $uid];
+    }
+
+    /**
+     * Đăng ký trên web: tạo tài khoản + đăng nhập session + gửi mail xác minh.
+     * Trả về [ok, message, warnings[]]
+     */
+    public static function register(string $username, string $password, string $email = '', string $phone = ''): array
+    {
+        [$ok, $msg, $uid] = self::createAccount($username, $password, $email, $phone !== '' ? ['phone' => $phone] : []);
+        if (!$ok) {
+            return [false, $msg, []];
+        }
 
         $_SESSION['uid'] = $uid;
         session_regenerate_id(true);
