@@ -16,6 +16,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` VARCHAR(100) DEFAULT NULL,
   `phone` VARCHAR(15) DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,            -- bcrypt (nguồn auth duy nhất cho web + mọi game)
+  `email_verified` TINYINT NOT NULL DEFAULT 0, -- 1 = đã xác minh email (thay cơ chế active của game)
+  `verify_token` VARCHAR(64) DEFAULT NULL,     -- sha256 của token gửi qua mail
+  `verify_expires` DATETIME DEFAULT NULL,
+  `verify_sent_at` DATETIME DEFAULT NULL,      -- chống spam gửi lại mail
   `xu` BIGINT NOT NULL DEFAULT 0,              -- số dư xu trên web
   `tong_nap` BIGINT NOT NULL DEFAULT 0,        -- tổng tiền đã nạp (VND)
   `role` TINYINT NOT NULL DEFAULT 0,           -- 0: user, 1: admin
@@ -213,7 +217,16 @@ INSERT INTO `settings` (`k`,`v`) VALUES
 ('sepay_account_name', ''),
 ('sepay_prefix', 'GATE'),
 ('sepay_api_key', ''),
-('central_auth_key', '')                -- key để game server gọi API /api/game-auth/verify
+('central_auth_key', ''),               -- key để game server gọi API /api/game-auth/verify
+-- Xác minh email + SMTP
+('email_verify_required', '0'),         -- 1 = bắt buộc xác minh email mới được vào game/nạp/đổi
+('smtp_host', ''),
+('smtp_port', '587'),
+('smtp_encryption', 'tls'),             -- tls | ssl | none
+('smtp_user', ''),
+('smtp_pass', ''),
+('smtp_from', ''),                      -- email người gửi (mặc định = smtp_user)
+('smtp_from_name', 'Gate Game')
 ON DUPLICATE KEY UPDATE `k` = `k`;
 
 -- 2 game mặc định (sửa lại thông tin trong admin)

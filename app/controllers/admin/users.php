@@ -55,6 +55,11 @@ function admin_users_save(): void
     }
 
     switch ($action) {
+        case 'verify_email':
+            DB::update('users', ['email_verified' => 1, 'verify_token' => null, 'verify_expires' => null], 'id = ?', [$id]);
+            flash_set('success', "Đã xác minh email cho {$user['username']}.");
+            break;
+
         case 'toggle_status':
             if ($me && (int)$me['id'] === $id) {
                 flash_set('error', 'Không thể tự khoá tài khoản của chính mình.');

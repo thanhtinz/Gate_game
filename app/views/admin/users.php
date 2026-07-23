@@ -21,7 +21,20 @@
         <tr>
           <td><?= (int)$u['id'] ?></td>
           <td><strong><?= e($u['username']) ?></strong></td>
-          <td><?= e($u['email'] ?? '') ?></td>
+          <td><?= e($u['email'] ?? '') ?>
+            <?php if ((int)($u['email_verified'] ?? 0) === 1): ?>
+              <span class="badge badge-success" title="Đã xác minh email">✔</span>
+            <?php else: ?>
+              <form method="post" action="<?= url('/admin/users') ?>" style="display:inline">
+                <?= Csrf::field() ?>
+                <input type="hidden" name="action" value="verify_email">
+                <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                <?php if (isset($q) && $q !== ''): ?><input type="hidden" name="q" value="<?= e($q) ?>"><?php endif; ?>
+                <?php if (isset($page)): ?><input type="hidden" name="page" value="<?= (int)$page ?>"><?php endif; ?>
+                <button type="submit" class="btn btn-sm" title="Xác minh email thủ công">Duyệt mail</button>
+              </form>
+            <?php endif; ?>
+          </td>
           <td><?= number_vn($u['xu']) ?></td>
           <td><?= number_vn($u['tong_nap']) ?>đ</td>
           <td><?= (int)$u['role'] === 1 ? '<span class="badge badge-primary">Admin</span>' : '<span class="badge">User</span>' ?></td>

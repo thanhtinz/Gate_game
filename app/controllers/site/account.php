@@ -29,6 +29,22 @@ function account_index(): void
     ]);
 }
 
+function account_verify_email(): void
+{
+    [$ok, $msg] = EmailVerify::confirm(trim((string)get('token')));
+    flash_set($ok ? 'success' : 'error', $msg);
+    redirect(Auth::check() ? '/tai-khoan' : '/dang-nhap');
+}
+
+function account_resend_verify(): void
+{
+    Csrf::check();
+    $me = Auth::requireLogin();
+    [$ok, $msg] = EmailVerify::sendMail($me);
+    flash_set($ok ? 'success' : 'error', $msg);
+    redirect('/tai-khoan');
+}
+
 function account_change_password(): void
 {
     Csrf::check();

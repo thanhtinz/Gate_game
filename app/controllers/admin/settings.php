@@ -29,6 +29,23 @@ function admin_settings_save(): void
     Settings::set('sepay_prefix', strtoupper(trim((string)post('sepay_prefix'))));
     Settings::set('sepay_api_key', trim((string)post('sepay_api_key')));
     Settings::set('central_auth_key', trim((string)post('central_auth_key')));
+    Settings::set('email_verify_required', post('email_verify_required') === '1' ? '1' : '0');
+    Settings::set('smtp_host', trim((string)post('smtp_host')));
+    Settings::set('smtp_port', trim((string)post('smtp_port')) ?: '587');
+    Settings::set('smtp_encryption', in_array(post('smtp_encryption'), ['tls', 'ssl', 'none']) ? post('smtp_encryption') : 'tls');
+    Settings::set('smtp_user', trim((string)post('smtp_user')));
+    if (trim((string)post('smtp_pass')) !== '') { // để trống = giữ mật khẩu cũ
+        Settings::set('smtp_pass', trim((string)post('smtp_pass')));
+    }
+    Settings::set('smtp_from', trim((string)post('smtp_from')));
+    Settings::set('smtp_from_name', trim((string)post('smtp_from_name')));
+
+    // Gửi mail test nếu có yêu cầu
+    if (trim((string)post('smtp_test_to')) !== '') {
+        [$ok, $msg] = Mailer::send(trim((string)post('smtp_test_to')), 'Test SMTP - ' . Settings::get('site_name'), '<p>Cấu hình SMTP hoạt động! 🎉</p>');
+        flash_set($ok ? 'success' : 'error', 'Đã lưu cấu hình. Mail test: ' . $msg);
+        redirect('/admin/settings');
+    }
 
     flash_set('success', 'Đã lưu cấu hình.');
     redirect('/admin/settings');

@@ -86,6 +86,61 @@
     </div>
   </div>
 
+  <div class="card">
+    <h2 class="card-title">📧 Email / SMTP & xác minh tài khoản</h2>
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="email_verify_required" value="1" <?= ($settings['email_verify_required'] ?? '0') === '1' ? 'checked' : '' ?>>
+        Bắt buộc xác minh email (chưa xác minh: không vào được game, không nạp/đổi xu/giftcode)
+      </label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>SMTP Host</label>
+        <input type="text" name="smtp_host" value="<?= e($settings['smtp_host'] ?? '') ?>" placeholder="smtp.gmail.com">
+      </div>
+      <div class="form-group">
+        <label>Port</label>
+        <input type="number" name="smtp_port" value="<?= e($settings['smtp_port'] ?? '587') ?>">
+      </div>
+      <div class="form-group">
+        <label>Mã hoá</label>
+        <select name="smtp_encryption">
+          <?php foreach (['tls' => 'TLS (587)', 'ssl' => 'SSL (465)', 'none' => 'Không'] as $k => $lb): ?>
+            <option value="<?= $k ?>" <?= ($settings['smtp_encryption'] ?? 'tls') === $k ? 'selected' : '' ?>><?= $lb ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>SMTP User</label>
+        <input type="text" name="smtp_user" value="<?= e($settings['smtp_user'] ?? '') ?>" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>SMTP Password (để trống = giữ nguyên)</label>
+        <input type="password" name="smtp_pass" value="" autocomplete="new-password" placeholder="<?= ($settings['smtp_pass'] ?? '') !== '' ? '••••••••' : '' ?>">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email người gửi (trống = SMTP User)</label>
+        <input type="text" name="smtp_from" value="<?= e($settings['smtp_from'] ?? '') ?>">
+      </div>
+      <div class="form-group">
+        <label>Tên người gửi</label>
+        <input type="text" name="smtp_from_name" value="<?= e($settings['smtp_from_name'] ?? 'Gate Game') ?>">
+      </div>
+      <div class="form-group">
+        <label>Gửi mail test tới (tuỳ chọn)</label>
+        <input type="email" name="smtp_test_to" value="" placeholder="email@cua-ban.com">
+      </div>
+    </div>
+    <div class="alert alert-info">
+      Gmail: bật 2FA rồi tạo <strong>App Password</strong>, host <code>smtp.gmail.com</code>, port 587, TLS.
+    </div>
+  </div>
+
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">Lưu cấu hình</button>
   </div>

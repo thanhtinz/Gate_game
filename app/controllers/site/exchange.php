@@ -29,6 +29,7 @@ function exchange_submit(): void
 {
     Csrf::check();
     $me = Auth::requireLogin();
+    EmailVerify::guard($me);
 
     $gameId = (int)post('game_id');
     $serverId = (int)post('server_id');

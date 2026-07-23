@@ -4,13 +4,28 @@
     <ul class="info-list">
       <li><span>Số dư xu</span><b class="accent"><?= number_vn($me['xu']) ?> xu</b></li>
       <li><span>Tổng đã nạp</span><b><?= number_vn($me['tong_nap']) ?> đ</b></li>
-      <li><span>Email</span><b><?= e($me['email'] ?: '—') ?></b></li>
+      <li><span>Email</span><b><?= e($me['email'] ?: '—') ?>
+        <?php if (EmailVerify::isVerified($me)): ?>
+          <span class="badge badge-completed">✔ Đã xác minh</span>
+        <?php else: ?>
+          <span class="badge badge-pending">Chưa xác minh</span>
+        <?php endif; ?>
+      </b></li>
       <li><span>Ngày tạo</span><b><?= date('d/m/Y', strtotime($me['created_at'])) ?></b></li>
     </ul>
     <div class="btn-row">
       <a class="btn btn-primary" href="<?= url('/nap-xu') ?>">💰 Nạp xu</a>
       <a class="btn btn-outline" href="<?= url('/doi-xu') ?>">🔄 Đổi xu</a>
     </div>
+    <?php if (!EmailVerify::isVerified($me)): ?>
+      <div class="alert alert-info" style="margin-top:14px">
+        📧 Tài khoản chưa xác minh email<?= EmailVerify::required() ? ' — cần xác minh để vào game và nạp/đổi xu' : '' ?>.
+        <form method="post" action="<?= url('/gui-lai-xac-minh') ?>" style="margin-top:8px">
+          <?= Csrf::field() ?>
+          <button class="btn btn-sm btn-primary" type="submit">Gửi lại mail xác minh</button>
+        </form>
+      </div>
+    <?php endif; ?>
   </div>
 
   <div class="card">

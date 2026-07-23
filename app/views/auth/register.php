@@ -9,8 +9,8 @@
     <input type="password" name="password" required minlength="6" maxlength="32">
     <label>Nhập lại mật khẩu</label>
     <input type="password" name="password2" required minlength="6" maxlength="32">
-    <label>Email (không bắt buộc — dùng khôi phục tài khoản)</label>
-    <input type="email" name="email" maxlength="100">
+    <label>Email (bắt buộc — dùng xác minh tài khoản)</label>
+    <input type="email" name="email" required maxlength="100">
     <button class="btn btn-primary btn-block" type="submit">Đăng ký</button>
   </form>
   <p class="muted center">Đã có tài khoản? <a href="<?= url('/dang-nhap') ?>">Đăng nhập</a></p>

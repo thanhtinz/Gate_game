@@ -84,6 +84,12 @@ class Auth
         if (DB::one('SELECT id FROM users WHERE username = ?', [$username])) {
             return [false, 'Tên tài khoản đã tồn tại.', []];
         }
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return [false, 'Vui lòng nhập email hợp lệ (dùng để xác minh và khôi phục tài khoản).', []];
+        }
+        if (DB::one('SELECT id FROM users WHERE email = ?', [$email])) {
+            return [false, 'Email này đã được dùng cho tài khoản khác.', []];
+        }
 
         // Chặn trùng với tài khoản in-game có sẵn (tài khoản cũ của người khác
         // vẫn đăng nhập game qua chế độ fallback — không cho chiếm username đó)
@@ -108,7 +114,15 @@ class Auth
 
         $_SESSION['uid'] = $uid;
         session_regenerate_id(true);
-        return [true, 'Đăng ký thành công!', []];
+
+        // Gửi mail xác minh (thay cơ chế kích hoạt tài khoản cũ của game)
+        $warnings = [];
+        $newUser = DB::one('SELECT * FROM users WHERE id = ?', [$uid]);
+        [$mailOk, $mailMsg] = EmailVerify::sendMail($newUser);
+        if (!$mailOk) {
+            $warnings[] = 'Chưa gửi được mail xác minh: ' . $mailMsg;
+        }
+        return [true, 'Đăng ký thành công!' . ($mailOk ? ' Vui lòng kiểm tra email để xác minh tài khoản.' : ''), $warnings];
     }
 
     /** Đổi mật khẩu web — game xác thực qua API nên không cần đồng bộ gì thêm */

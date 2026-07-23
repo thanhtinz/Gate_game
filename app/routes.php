@@ -21,6 +21,8 @@ function routes(): array
         'GET /dang-xuat'             => ['site/auth.php', 'auth_logout'],
         'GET /tai-khoan'             => ['site/account.php', 'account_index'],
         'POST /doi-mat-khau'         => ['site/account.php', 'account_change_password'],
+        'GET /xac-minh-email'        => ['site/account.php', 'account_verify_email'],
+        'POST /gui-lai-xac-minh'     => ['site/account.php', 'account_resend_verify'],
 
         // Nạp xu + quy đổi + giftcode
         'GET /nap-xu'                => ['site/topup.php', 'topup_index'],

@@ -13,6 +13,7 @@
  *   { success: false, code: "not_found" }      -> game server fallback tài khoản cũ trong DB game
  *   { success: false, code: "wrong_password" } -> báo sai mật khẩu, KHÔNG fallback
  *   { success: false, code: "locked" }         -> tài khoản bị khoá trên web
+ *   { success: false, code: "unverified" }     -> chưa xác minh email (khi admin bật bắt buộc)
  */
 function game_auth_verify(): void
 {
@@ -28,7 +29,7 @@ function game_auth_verify(): void
         json_out(['success' => false, 'code' => 'invalid_request'], 400);
     }
 
-    $u = DB::one('SELECT id, username, password, status FROM users WHERE username = ?', [$username]);
+    $u = DB::one('SELECT id, username, password, status, email_verified FROM users WHERE username = ?', [$username]);
     if (!$u) {
         json_out(['success' => false, 'code' => 'not_found']);
     }
@@ -37,6 +38,9 @@ function game_auth_verify(): void
     }
     if ((int)$u['status'] !== 1) {
         json_out(['success' => false, 'code' => 'locked']);
+    }
+    if (EmailVerify::required() && (int)$u['email_verified'] !== 1) {
+        json_out(['success' => false, 'code' => 'unverified']);
     }
     json_out([
         'success' => true,

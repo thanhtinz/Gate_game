@@ -41,10 +41,6 @@ function auth_register(): void
         flash_set('error', 'Mật khẩu nhập lại không khớp.');
         redirect('/dang-ky');
     }
-    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        flash_set('error', 'Email không hợp lệ.');
-        redirect('/dang-ky');
-    }
 
     [$ok, $msg, $warnings] = Auth::register($username, $password, $email);
     if (!$ok) {

@@ -74,6 +74,14 @@ Cách bật (2 game đã được patch sẵn trong repo `Nro` và `Lttt`):
 
 Đăng ký tài khoản mới chỉ thực hiện trên web. Web chặn đăng ký username trùng với tài khoản in-game cũ (tránh chiếm tài khoản fallback của người khác).
 
+## Xác minh email (thay cơ chế kích hoạt tài khoản của game)
+
+- Đăng ký bắt buộc nhập email → cổng gửi mail chứa link kích hoạt (hiệu lực 24h, gửi lại tối đa 1 lần/phút).
+- Admin → **Cấu hình** → mục *Email/SMTP*: điền SMTP (Gmail App Password, Zoho, SendGrid...), có nút gửi mail test; bật **"Bắt buộc xác minh email"** khi muốn áp dụng.
+- Khi bật bắt buộc: tài khoản chưa xác minh **không đăng nhập được game** (API trả `unverified`, game hiện thông báo về web xác minh) và không nạp/đổi xu/nhập giftcode được.
+- Admin → Người dùng: thấy trạng thái ✔ và có nút **Duyệt mail** xác minh thủ công.
+- Bản cài cũ chạy: `mysql gate_portal < database/migrations/2026-07-email-verify.sql` (user có sẵn được coi là đã xác minh).
+
 ## Kết nối DB game
 
 Admin → **Server game** → thêm/sửa server với host/port/db/user/pass của DB game đó, bấm **Kiểm tra** để test kết nối + schema:

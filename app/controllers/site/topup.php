@@ -19,6 +19,7 @@ function topup_create(): void
 {
     Csrf::check();
     $me = Auth::requireLogin();
+    EmailVerify::guard($me);
     if (Settings::get('sepay_enabled') !== '1') {
         flash_set('error', 'Phương thức nạp đang tạm đóng.');
         redirect('/nap-xu');
