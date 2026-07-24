@@ -2,8 +2,8 @@
   <h1>Đơn nạp <?= e($order['code']) ?></h1>
 
   <?php if ($order['status'] === 'completed'): ?>
-    <div class="alert alert-success">✅ Đơn đã thanh toán thành công! Xu đã được cộng vào tài khoản.</div>
-    <a class="btn btn-primary" href="<?= url('/doi-xu') ?>">🔄 Đổi xu ra tiền tệ game</a>
+    <div class="alert alert-success"><?= icon('check-circle') ?> Đơn đã thanh toán thành công! Xu đã được cộng vào tài khoản.</div>
+    <a class="btn btn-primary" href="<?= url('/doi-xu') ?>"><?= icon('exchange') ?> Đổi xu ra tiền tệ game</a>
   <?php elseif ($order['status'] === 'cancelled'): ?>
     <div class="alert alert-error">Đơn đã bị huỷ. Vui lòng tạo đơn mới.</div>
     <a class="btn btn-primary" href="<?= url('/nap-xu') ?>">Tạo đơn mới</a>
@@ -23,10 +23,10 @@
           <li><span>Xu nhận</span><b><?= number_vn($order['xu'] + $order['bonus_xu']) ?> xu</b></li>
         </ul>
         <div class="alert alert-info">
-          ⚠️ Chuyển khoản <b>đúng số tiền</b> và <b>đúng nội dung "<?= e($order['code']) ?>"</b>.
+          <?= icon('warning') ?> Chuyển khoản <b>đúng số tiền</b> và <b>đúng nội dung "<?= e($order['code']) ?>"</b>.
           Xu sẽ tự động cộng sau 5–30 giây kể từ khi tiền vào.
         </div>
-        <p id="orderPolling" class="muted center">⏳ Đang chờ thanh toán...</p>
+        <p id="orderPolling" class="muted center"><?= icon('clock') ?> Đang chờ thanh toán...</p>
       </div>
     </div>
   <?php endif; ?>

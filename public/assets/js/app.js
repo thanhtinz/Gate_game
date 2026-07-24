@@ -183,12 +183,14 @@
   }
 })();
 
-/* Toggle hiện/ẩn mật khẩu */
+/* Toggle hiện/ẩn mật khẩu (đổi icon mắt <-> mắt gạch) */
+var EYE = '<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+var EYE_OFF = '<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 5.2A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.3 4.1M6.3 6.3A17 17 0 0 0 2 12s3.5 7 10 7a10.6 10.6 0 0 0 4-.8"/><path d="M9.5 9.5a3 3 0 0 0 4.2 4.2"/><path d="m3 3 18 18"/></svg>';
 document.addEventListener('click', function (e) {
   var btn = e.target.closest('.pw-toggle');
   if (!btn) return;
   var input = document.getElementById(btn.getAttribute('data-target'));
   if (!input) return;
   input.type = input.type === 'password' ? 'text' : 'password';
-  btn.textContent = input.type === 'password' ? '👁' : '🙈';
+  btn.innerHTML = input.type === 'password' ? EYE : EYE_OFF;
 });

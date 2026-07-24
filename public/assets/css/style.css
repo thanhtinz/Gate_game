@@ -59,9 +59,12 @@ main.container { flex: 1; padding-top: 20px; padding-bottom: 40px; }
 /* Cards / sections */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
 .section { margin: 28px 0; }
-.section-title { font-size: 20px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.section-title .more { font-size: 13px; font-weight: 400; }
-.page-heading { margin: 10px 0 6px; }
+.section-title { font-size: 20px; margin-bottom: 14px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; }
+.section-title .ic { margin-right: 0; }
+.section-title .more { font-size: 13px; font-weight: 400; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
+.section-title .more .ic { width: 15px; height: 15px; }
+.page-heading { margin: 10px 0 6px; display: flex; align-items: center; gap: 8px; }
+.page-heading .ic { width: 24px; height: 24px; }
 .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 
 /* Alerts */
@@ -246,3 +249,37 @@ select[disabled] { opacity: .55; }
 .qa-icon { font-size: 28px; }
 .game-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 @media (max-width: 760px) { .quick-actions { grid-template-columns: repeat(2, 1fr); } }
+
+/* ===== Icon SVG inline ===== */
+.ic { display: inline-block; vertical-align: -0.18em; flex-shrink: 0; }
+.ic-lg { width: 26px; height: 26px; }
+.section-title .ic, .page-heading .ic, .card-title .ic { vertical-align: -0.15em; margin-right: 4px; }
+.btn .ic { vertical-align: -0.2em; margin-right: 6px; width: 17px; height: 17px; }
+.btn .ic:only-child { margin-right: 0; }
+.qa-icon .ic { width: 28px; height: 28px; }
+.main-nav a .ic { width: 16px; height: 16px; margin-right: 5px; vertical-align: -0.16em; }
+.field-icon .fi .ic { width: 17px; height: 17px; display: block; }
+.info-list .ic, .badge .ic { width: 15px; height: 15px; vertical-align: -0.15em; }
+.server-chips .chip .ic { color: var(--green); }
+.rank-medal { font-weight: 700; }
+.rank-1 { color: #ffd76a; } .rank-2 { color: #d7dce6; } .rank-3 { color: #e8a76a; }
+.sidebar nav a .ic { width: 18px; height: 18px; margin-right: 9px; vertical-align: -0.2em; }
+.sidebar-logo .ic, .sidebar-footer .ic { vertical-align: -0.2em; margin-right: 6px; }
+
+/* Nút tải game: icon store */
+.btn-download { display: inline-flex; align-items: center; gap: 8px; }
+.btn-download .ic { width: 20px; height: 20px; margin-right: 0; vertical-align: middle; }
+.server-chips .chip { display: inline-flex; align-items: center; gap: 6px; }
+.server-chips .chip .ic { width: 12px; height: 12px; }
+.news-item h4 .ic { width: 15px; height: 15px; vertical-align: -0.15em; }
+
+/* Auth icon sizes */
+.ic-xl { width: 46px; height: 46px; }
+.auth-side-icon { color: var(--accent); display: inline-flex; }
+.auth-side-icon .ic { width: 46px; height: 46px; }
+.btn-google .ic { width: 18px; height: 18px; margin-right: 8px; }
+.auth-perks li { display: flex; align-items: center; gap: 8px; }
+.auth-perks .ic { width: 17px; height: 17px; color: var(--accent); flex-shrink: 0; }
+.pw-toggle { display: inline-flex; align-items: center; }
+.pw-toggle .ic { width: 20px; height: 20px; }
+.badge .ic { width: 13px; height: 13px; vertical-align: -0.13em; }

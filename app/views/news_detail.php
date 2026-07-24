@@ -1,7 +1,7 @@
 <article class="card article">
   <h1><?= e($item['title']) ?></h1>
   <p class="muted">
-    <?= $item['type'] === 'event' ? '🎉 Sự kiện' : '📰 Tin tức' ?>
+    <?= $item['type'] === 'event' ? icon('event') . ' Sự kiện' : icon('news') . ' Tin tức' ?>
     · <?= e($item['game_name'] ?: 'Chung') ?>
     · <?= date('d/m/Y H:i', strtotime($item['created_at'])) ?>
   </p>

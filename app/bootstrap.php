@@ -37,3 +37,4 @@ spl_autoload_register(function ($class) {
 });
 
 require APP_DIR . '/core/helpers.php';
+require APP_DIR . '/core/icons.php';

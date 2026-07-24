@@ -51,7 +51,7 @@ class EmailVerify
 
         $html = '
         <div style="max-width:520px;margin:0 auto;font-family:Arial,sans-serif;background:#131a2c;color:#e8edf7;border-radius:12px;padding:28px">
-          <h2 style="margin-top:0">🎮 ' . e($siteName) . '</h2>
+          <h2 style="margin-top:0;color:#4f8cff">' . e($siteName) . '</h2>
           <p>Xin chào <b>' . e($user['username']) . '</b>,</p>
           <p>Bấm nút bên dưới để xác minh email và kích hoạt tài khoản (dùng chung cho website và tất cả game trên cổng):</p>
           <p style="text-align:center;margin:26px 0">

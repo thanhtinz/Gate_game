@@ -94,7 +94,7 @@
           </td>
           <td><?= $n['type'] === 'event' ? '<span class="badge badge-warning">Sự kiện</span>' : '<span class="badge badge-primary">Tin tức</span>' ?></td>
           <td><?= e($n['game_name'] ?? 'Tin chung') ?></td>
-          <td><?= (int)$n['pinned'] === 1 ? '📌' : '' ?></td>
+          <td><?= (int)$n['pinned'] === 1 ? icon('pin') : '' ?></td>
           <td><?= (int)$n['status'] === 1 ? '<span class="badge badge-success">Hiển thị</span>' : '<span class="badge">Ẩn</span>' ?></td>
           <td><?= e($n['created_at']) ?></td>
           <td class="actions">

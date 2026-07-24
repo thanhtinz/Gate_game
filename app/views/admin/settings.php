@@ -73,7 +73,7 @@
   </div>
 
   <div class="card">
-    <h2 class="card-title">🔐 Auth tập trung cho game server</h2>
+    <h2 class="card-title"><?= icon('shield-lock') ?> Auth tập trung cho game server</h2>
     <div class="form-group">
       <label>Central Auth Key (game server gọi API xác thực bằng key này)</label>
       <input type="text" name="central_auth_key" value="<?= e($settings['central_auth_key'] ?? '') ?>" autocomplete="off" placeholder="Chuỗi ngẫu nhiên 32+ ký tự">
@@ -87,7 +87,7 @@
   </div>
 
   <div class="card">
-    <h2 class="card-title">🔵 Đăng nhập Google</h2>
+    <h2 class="card-title"><?= icon('google') ?> Đăng nhập Google</h2>
     <div class="form-group">
       <label>
         <input type="checkbox" name="google_enabled" value="1" <?= ($settings['google_enabled'] ?? '0') === '1' ? 'checked' : '' ?>>
@@ -112,7 +112,7 @@
   </div>
 
   <div class="card">
-    <h2 class="card-title">📧 Email / SMTP & xác minh tài khoản</h2>
+    <h2 class="card-title"><?= icon('mail') ?> Email / SMTP & xác minh tài khoản</h2>
     <div class="form-group">
       <label>
         <input type="checkbox" name="email_verify_required" value="1" <?= ($settings['email_verify_required'] ?? '0') === '1' ? 'checked' : '' ?>>

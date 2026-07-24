@@ -1,4 +1,4 @@
-<h1 class="page-heading">🎁 Nhập Giftcode</h1>
+<h1 class="page-heading"><?= icon('gift') ?> Nhập Giftcode</h1>
 <?php if (!$me): ?>
   <div class="alert alert-info">Vui lòng <a href="<?= url('/dang-nhap') ?>">đăng nhập</a> để nhập giftcode.</div>
 <?php endif; ?>

@@ -47,7 +47,7 @@ function admin_settings_save(): void
 
     // Gửi mail test nếu có yêu cầu
     if (trim((string)post('smtp_test_to')) !== '') {
-        [$ok, $msg] = Mailer::send(trim((string)post('smtp_test_to')), 'Test SMTP - ' . Settings::get('site_name'), '<p>Cấu hình SMTP hoạt động! 🎉</p>');
+        [$ok, $msg] = Mailer::send(trim((string)post('smtp_test_to')), 'Test SMTP - ' . Settings::get('site_name'), '<p>Cấu hình SMTP hoạt động!</p>');
         flash_set($ok ? 'success' : 'error', 'Đã lưu cấu hình. Mail test: ' . $msg);
         redirect('/admin/settings');
     }

@@ -23,7 +23,7 @@
           <td><strong><?= e($u['username']) ?></strong></td>
           <td><?= e($u['email'] ?? '') ?>
             <?php if ((int)($u['email_verified'] ?? 0) === 1): ?>
-              <span class="badge badge-success" title="Đã xác minh email">✔</span>
+              <span class="badge badge-success" title="Đã xác minh email"><?= icon('check') ?></span>
             <?php else: ?>
               <form method="post" action="<?= url('/admin/users') ?>" style="display:inline">
                 <?= Csrf::field() ?>

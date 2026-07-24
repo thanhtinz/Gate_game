@@ -1,4 +1,4 @@
-<h1 class="page-heading">🏆 Bảng xếp hạng</h1>
+<h1 class="page-heading"><?= icon('trophy') ?> Bảng xếp hạng</h1>
 
 <form method="get" action="<?= url('/bxh') ?>" class="filter-bar">
   <select name="game_id" onchange="this.form.server_id.value='';this.form.submit()">
@@ -25,7 +25,7 @@
     </tr>
     <?php foreach ($ranking['rows'] as $i => $row): ?>
     <tr class="<?= $i < 3 ? 'top-' . ($i + 1) : '' ?>">
-      <td><?= $i < 3 ? ['🥇', '🥈', '🥉'][$i] : $i + 1 ?></td>
+      <td><?php if ($i < 3): ?><span class="rank-medal rank-<?= $i+1 ?>"><?= icon('trophy') ?></span><?php else: ?><?= $i + 1 ?><?php endif; ?></td>
       <?php foreach ($row as $cell): ?><td><?= e($cell) ?></td><?php endforeach; ?>
     </tr>
     <?php endforeach; ?>

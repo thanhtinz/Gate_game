@@ -430,3 +430,12 @@ input.input-sm { width: 90px; }
 @media (max-width: 520px) {
   .stat-grid { grid-template-columns: 1fr; }
 }
+
+/* Icon trong admin */
+.ic { display: inline-block; vertical-align: -0.18em; flex-shrink: 0; }
+.card-title .ic { margin-right: 5px; vertical-align: -0.15em; }
+.page-title .ic { margin-right: 6px; vertical-align: -0.15em; }
+.sidebar nav a .ic { width: 18px; height: 18px; margin-right: 9px; vertical-align: -0.22em; }
+.sidebar-logo .ic { vertical-align: -0.2em; margin-right: 6px; }
+.sidebar-footer .ic { width: 15px; height: 15px; vertical-align: -0.2em; margin-right: 5px; }
+.data-table .ic { vertical-align: -0.15em; }

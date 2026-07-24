@@ -20,20 +20,20 @@ $flash = flash_get();
       <?php if (Settings::get('site_logo')): ?>
         <img src="<?= e(url(Settings::get('site_logo'))) ?>" alt="<?= e($siteName) ?>">
       <?php else: ?>
-        <span class="logo-text">🎮 <?= e($siteName) ?></span>
+        <span class="logo-text"><?= icon('gamepad', 'ic-lg') ?> <?= e($siteName) ?></span>
       <?php endif; ?>
     </a>
     <nav class="main-nav" id="mainNav">
-      <a href="<?= url('/') ?>">Trang chủ</a>
-      <a href="<?= url('/tin-tuc') ?>">Tin tức</a>
-      <a href="<?= url('/nap-xu') ?>">Nạp xu</a>
-      <a href="<?= url('/doi-xu') ?>">Đổi xu</a>
-      <a href="<?= url('/giftcode') ?>">Giftcode</a>
-      <a href="<?= url('/bxh') ?>">Xếp hạng</a>
+      <a href="<?= url('/') ?>"><?= icon('home') ?>Trang chủ</a>
+      <a href="<?= url('/tin-tuc') ?>"><?= icon('news') ?>Tin tức</a>
+      <a href="<?= url('/nap-xu') ?>"><?= icon('wallet') ?>Nạp xu</a>
+      <a href="<?= url('/doi-xu') ?>"><?= icon('exchange') ?>Đổi xu</a>
+      <a href="<?= url('/giftcode') ?>"><?= icon('gift') ?>Giftcode</a>
+      <a href="<?= url('/bxh') ?>"><?= icon('trophy') ?>Xếp hạng</a>
     </nav>
     <div class="header-user">
       <?php if ($me): ?>
-        <span class="user-xu">💰 <?= number_vn($me['xu']) ?> xu</span>
+        <span class="user-xu"><?= icon('coin') ?> <?= number_vn($me['xu']) ?> xu</span>
         <a href="<?= url('/tai-khoan') ?>" class="btn btn-sm"><?= e($me['username']) ?></a>
         <?php if ((int)$me['role'] === 1): ?><a href="<?= url('/admin') ?>" class="btn btn-sm btn-warning">Admin</a><?php endif; ?>
         <a href="<?= url('/dang-xuat') ?>" class="btn btn-sm btn-outline">Thoát</a>
@@ -42,7 +42,7 @@ $flash = flash_get();
         <a href="<?= url('/dang-ky') ?>" class="btn btn-sm btn-primary">Đăng ký</a>
       <?php endif; ?>
     </div>
-    <button class="nav-toggle" onclick="document.getElementById('mainNav').classList.toggle('open')">☰</button>
+    <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('mainNav').classList.toggle('open')"><?= icon('menu') ?></button>
   </div>
 </header>
 <main class="container">

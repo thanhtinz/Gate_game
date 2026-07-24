@@ -1,8 +1,8 @@
 <div class="filter-bar">
   <div class="tabs">
     <a class="tab<?= $type === '' ? ' active' : '' ?>" href="<?= url('/tin-tuc') ?>">Tất cả</a>
-    <a class="tab<?= $type === 'news' ? ' active' : '' ?>" href="<?= url('/tin-tuc?type=news') ?>">📰 Tin tức</a>
-    <a class="tab<?= $type === 'event' ? ' active' : '' ?>" href="<?= url('/tin-tuc?type=event') ?>">🎉 Sự kiện</a>
+    <a class="tab<?= $type === 'news' ? ' active' : '' ?>" href="<?= url('/tin-tuc?type=news') ?>"><?= icon('news') ?> Tin tức</a>
+    <a class="tab<?= $type === 'event' ? ' active' : '' ?>" href="<?= url('/tin-tuc?type=event') ?>"><?= icon('event') ?> Sự kiện</a>
   </div>
   <form method="get" action="<?= url('/tin-tuc') ?>">
     <?php if ($type): ?><input type="hidden" name="type" value="<?= e($type) ?>"><?php endif; ?>
@@ -20,11 +20,11 @@
   <?php foreach ($items as $n): ?>
     <a class="news-card" href="<?= url('/tin-tuc/' . $n['slug']) ?>">
       <div class="news-card-thumb">
-        <?php if ($n['thumbnail']): ?><img src="<?= e(url($n['thumbnail'])) ?>" alt=""><?php else: ?><div class="thumb-placeholder">📰</div><?php endif; ?>
+        <?php if ($n['thumbnail']): ?><img src="<?= e(url($n['thumbnail'])) ?>" alt=""><?php else: ?><div class="thumb-placeholder"><?= icon($n['type'] === 'event' ? 'event' : 'news', 'ic-lg') ?></div><?php endif; ?>
         <span class="badge badge-<?= $n['type'] ?>"><?= $n['type'] === 'event' ? 'Sự kiện' : 'Tin tức' ?></span>
       </div>
       <div class="news-card-body">
-        <h3><?= $n['pinned'] ? '📌 ' : '' ?><?= e($n['title']) ?></h3>
+        <h3><?php if ($n['pinned']): ?><?= icon('pin') ?> <?php endif; ?><?= e($n['title']) ?></h3>
         <p class="muted"><?= e(mb_substr((string)$n['summary'], 0, 120)) ?></p>
         <span class="muted small"><?= e($n['game_name'] ?: 'Chung') ?> · <?= date('d/m/Y', strtotime($n['created_at'])) ?></span>
       </div>
