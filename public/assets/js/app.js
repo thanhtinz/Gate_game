@@ -121,6 +121,12 @@
     if (pkgArea) pkgArea.classList.remove('hidden');
   }
 
+  // Trang đổi xu: tự chọn game đầu tiên để hiện gói ngay khi vào trang
+  if (selGame && pkgWrap && !selGame.value && selGame.options.length > 1) {
+    selGame.selectedIndex = 1;
+    selGame.dispatchEvent(new Event('change'));
+  }
+
   /* ---------- Giftcode preview: hiện quà ngay dưới ô nhập ---------- */
   var giftInput = document.getElementById('giftcodeInput');
   var giftPreview = document.getElementById('giftcodePreview');

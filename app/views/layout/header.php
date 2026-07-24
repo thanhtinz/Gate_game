@@ -8,7 +8,7 @@ $flash = flash_get();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<script>(function(){var t='light';try{var s=localStorage.getItem('theme');if(s==='light'||s==='dark')t=s;}catch(e){}document.documentElement.setAttribute('data-theme',t);})();</script>
 <title><?= e(($title ?? '') ? $title . ' - ' . $siteName : $siteName) ?></title>
 <meta name="description" content="<?= e($metaDesc ?? Settings::get('site_desc')) ?>">
 <meta name="keywords" content="<?= e(Settings::get('site_keywords')) ?>">
