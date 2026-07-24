@@ -16,6 +16,7 @@ class CurrencyIcon
 {
     private static ?array $items = null;
     private static ?array $bases = null;
+    private static ?array $paths = null;
 
     private static function items(): array
     {
@@ -33,6 +34,33 @@ class CurrencyIcon
             self::$bases = is_array($data) ? $data : [];
         }
         return self::$bases;
+    }
+
+    /** Đường dẫn thư mục icon trên ổ đĩa (data/icon/x1 của game server) theo game */
+    private static function paths(): array
+    {
+        if (self::$paths === null) {
+            $data = json_decode(Settings::get('game_icon_path', '') ?: '[]', true);
+            self::$paths = is_array($data) ? $data : [];
+        }
+        return self::$paths;
+    }
+
+    public static function iconPath(int $gameId): string
+    {
+        return (string)(self::paths()[$gameId] ?? '');
+    }
+
+    public static function setPath(int $gameId, string $path): void
+    {
+        $paths = self::paths();
+        if ($path === '') {
+            unset($paths[$gameId]);
+        } else {
+            $paths[$gameId] = rtrim($path, '/');
+        }
+        self::$paths = $paths;
+        Settings::set('game_icon_path', json_encode($paths, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     public static function itemId(int $gameId, string $key): ?int
@@ -76,7 +104,16 @@ class CurrencyIcon
 
     private static function fallback(): string
     {
-        return '/assets/currency/default.png';
+        return url('/assets/currency/default.png');
+    }
+
+    /** URL ảnh cho 1 icon_id: ưu tiên đọc file trên ổ đĩa game server (proxy), nếu không dùng base URL */
+    public static function iconUrlFor(int $gameId, string $adapter, int $iconId): string
+    {
+        if (self::iconPath($gameId) !== '') {
+            return url('/game-icon/' . $gameId . '/' . $iconId);
+        }
+        return self::iconBase($gameId, $adapter) . $iconId . '.png';
     }
 
     /**
@@ -97,7 +134,7 @@ class CurrencyIcon
         if (!$info) {
             return self::fallback();
         }
-        return self::iconBase($gameId, $adapter) . $info['icon_id'] . '.png';
+        return self::iconUrlFor($gameId, $adapter, (int)$info['icon_id']);
     }
 
     /**
@@ -150,7 +187,8 @@ class CurrencyIcon
         }
         if ($info) {
             $out['name'] = $info['name'];
-            $out['url'] = self::iconBase($gameId, $adapter) . $info['icon_id'] . '.png';
+            $out['icon_id'] = (int)$info['icon_id'];
+            $out['url'] = self::iconUrlFor($gameId, $adapter, (int)$info['icon_id']);
         }
         return $out;
     }

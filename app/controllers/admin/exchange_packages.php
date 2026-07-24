@@ -44,6 +44,7 @@ function admin_exchange_packages(): void
         $iconInfo[$gid] = [
             'has_server' => (bool)$server,
             'base' => CurrencyIcon::iconBase($gid, $g['adapter']),
+            'path' => CurrencyIcon::iconPath($gid),
             'currencies' => [],
         ];
         try {
@@ -91,7 +92,8 @@ function admin_exchange_packages_save(): void
     if ($action === 'save_icon_base') {
         $gameId = (int)post('game_id');
         CurrencyIcon::setBase($gameId, trim((string)post('icon_base')));
-        flash_set('success', 'Đã lưu đường dẫn bộ icon của game.');
+        CurrencyIcon::setPath($gameId, trim((string)post('icon_path')));
+        flash_set('success', 'Đã lưu nguồn icon của game.');
         redirect('/admin/exchange-packages');
     }
 

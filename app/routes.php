@@ -38,6 +38,7 @@ function routes(): array
         'POST /giftcode'             => ['site/giftcode.php', 'giftcode_submit'],
 
         // AJAX API
+        'GET /game-icon/{game}/{icon}' => ['site/gameicon.php', 'game_icon_serve'],
         'GET /api/servers'           => ['site/api.php', 'api_servers'],
         'GET /api/characters'        => ['site/api.php', 'api_characters'],
         'GET /api/giftcode-info'     => ['site/api.php', 'api_giftcode_info'],

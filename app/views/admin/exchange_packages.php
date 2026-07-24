@@ -128,10 +128,19 @@
         <?= Csrf::field() ?>
         <input type="hidden" name="action" value="save_icon_base">
         <input type="hidden" name="game_id" value="<?= $gid ?>">
-        <label>Đường dẫn bộ icon</label>
-        <input type="text" name="icon_base" value="<?= e($ii['base']) ?>" placeholder="/assets/game-icons/<?= e($g['adapter']) ?>/ hoặc https://cdn...">
-        <button type="submit" class="btn btn-sm">Lưu đường dẫn</button>
+        <div style="flex:1;min-width:320px">
+          <label>Thư mục icon trên server game (tự động — ưu tiên nếu điền)</label>
+          <input type="text" name="icon_path" value="<?= e($ii['path']) ?>" placeholder="<?= e($g['adapter']) === 'nro' ? '/duong-dan/nro-server/data/icon/x1' : 'đường dẫn thư mục chứa &lt;icon_id&gt;.png' ?>">
+        </div>
+        <div style="flex:1;min-width:280px">
+          <label>Hoặc URL bộ icon đã export</label>
+          <input type="text" name="icon_base" value="<?= e($ii['base']) ?>" placeholder="/assets/game-icons/<?= e($g['adapter']) ?>/ hoặc https://cdn...">
+        </div>
+        <button type="submit" class="btn btn-sm">Lưu nguồn icon</button>
       </form>
+      <?php if ($g['adapter'] === 'nro'): ?>
+        <p class="help-text" style="margin:-4px 0 10px">NRO: trỏ vào thư mục <code>data/icon/x1</code> của game server — web sẽ tự đọc file <code>&lt;icon_id&gt;.png</code>, không cần copy.</p>
+      <?php endif; ?>
 
       <div class="currency-icon-grid">
         <?php foreach ($ii['currencies'] as $ckey => $c): $info = $c['info']; ?>

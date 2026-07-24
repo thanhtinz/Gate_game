@@ -113,8 +113,12 @@ Lưu ý khi quy đổi tiền tệ ghi trực tiếp vào nhân vật (ngọc/v�
 Ở trang Đổi xu, mỗi gói hiện icon đúng của tiền tệ game. Cách hoạt động:
 
 1. Admin → **Gói quy đổi** → mục *Icon tiền tệ game*: gán mỗi loại tiền tệ (ngọc/vàng/lượng...) với một **item_id** trong bảng item của game (`item_template` của NRO, `items` của Avatar). Web đọc `icon_id` của item đó trực tiếp từ DB game, kèm hiển thị tên item để đối chiếu.
-2. Ảnh icon lấy từ bộ icon đã **export từ client game** đặt tại `public/assets/game-icons/<adapter>/<icon_id>.png` (hoặc trỏ CDN qua ô *Đường dẫn bộ icon*). Icon của game nằm trong texture Unity (NRO) / file `.av` (Avatar) nên cần export một lần rồi bỏ vào thư mục này.
-3. Chưa gán item hoặc thiếu file icon → hiện ảnh mặc định trung tính `/assets/currency/default.png`.
+2. Nguồn ảnh icon (theo `icon_id`), chọn 1 trong 2:
+   - **NRO — tự động, không cần copy:** icon vật phẩm là file `data/icon/x1/<icon_id>.png` sẵn có trên **game server** NRO (server đọc từ đây để gửi client). Điền đường dẫn thư mục đó vào ô *Thư mục icon trên server game* → web đọc thẳng file qua endpoint `/game-icon/<gameId>/<icon_id>` (có cache). Cổng và game server nên ở cùng máy hoặc mount chung.
+   - **Hoặc bộ icon export/CDN:** đặt file `<icon_id>.png` vào `public/assets/game-icons/<adapter>/` hoặc điền URL CDN vào ô *URL bộ icon*. Dùng cho Avatar (icon đóng gói trong `.av`, phải tự export) hoặc khi không truy cập được thư mục server.
+3. Chưa gán item / thiếu file → hiện ảnh mặc định trung tính.
+
+> **Vì sao Avatar phải export thủ công:** NRO lưu icon dạng PNG rời (`data/icon/x1/`) nên đọc trực tiếp được; còn Avatar (J2ME) đóng gói icon trong file nhị phân `.av`/`item.dat` — cần trình giải mã riêng mới tách ra được.
 
 ## Thêm game mới
 
