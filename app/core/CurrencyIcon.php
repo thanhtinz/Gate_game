@@ -1,105 +1,19 @@
 <?php
 /**
- * Icon tiền tệ game — lấy theo item trong DB game.
- *
- * Cơ chế:
- *  - Admin gán mỗi (game, currency_key) với 1 item_id trong bảng item của game.
- *  - Web đọc icon_id của item đó từ DB game (adapter->getItemIcon).
- *  - Ảnh icon lấy từ bộ icon đã export/host: {icon_base}{icon_id}.png
- *    (mặc định /assets/game-icons/{adapter}/, có thể trỏ CDN riêng trong admin).
- *
- * Lưu cấu hình trong settings:
- *  - currency_items : JSON {gameId: {currency_key: itemId}}
- *  - game_icon_base : JSON {gameId: baseUrl}
+ * Icon tiền tệ game — admin tự upload ảnh cho từng (game, currency_key).
+ * Lưu trong settings key 'currency_icons' dạng JSON {gameId: {currency_key: url}}.
  */
 class CurrencyIcon
 {
-    private static ?array $items = null;
-    private static ?array $bases = null;
-    private static ?array $paths = null;
+    private static ?array $icons = null;
 
-    private static function items(): array
+    private static function icons(): array
     {
-        if (self::$items === null) {
-            $data = json_decode(Settings::get('currency_items', '') ?: '[]', true);
-            self::$items = is_array($data) ? $data : [];
+        if (self::$icons === null) {
+            $data = json_decode(Settings::get('currency_icons', '') ?: '[]', true);
+            self::$icons = is_array($data) ? $data : [];
         }
-        return self::$items;
-    }
-
-    private static function bases(): array
-    {
-        if (self::$bases === null) {
-            $data = json_decode(Settings::get('game_icon_base', '') ?: '[]', true);
-            self::$bases = is_array($data) ? $data : [];
-        }
-        return self::$bases;
-    }
-
-    /** Đường dẫn thư mục icon trên ổ đĩa (data/icon/x1 của game server) theo game */
-    private static function paths(): array
-    {
-        if (self::$paths === null) {
-            $data = json_decode(Settings::get('game_icon_path', '') ?: '[]', true);
-            self::$paths = is_array($data) ? $data : [];
-        }
-        return self::$paths;
-    }
-
-    public static function iconPath(int $gameId): string
-    {
-        return (string)(self::paths()[$gameId] ?? '');
-    }
-
-    public static function setPath(int $gameId, string $path): void
-    {
-        $paths = self::paths();
-        if ($path === '') {
-            unset($paths[$gameId]);
-        } else {
-            $paths[$gameId] = rtrim($path, '/');
-        }
-        self::$paths = $paths;
-        Settings::set('game_icon_path', json_encode($paths, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-    }
-
-    public static function itemId(int $gameId, string $key): ?int
-    {
-        $v = self::items()[$gameId][$key] ?? null;
-        return $v !== null && $v !== '' ? (int)$v : null;
-    }
-
-    public static function iconBase(int $gameId, string $adapter): string
-    {
-        $b = self::bases()[$gameId] ?? '';
-        if ($b !== '') {
-            return rtrim($b, '/') . '/';
-        }
-        return '/assets/game-icons/' . preg_replace('/[^a-z0-9_]/', '', $adapter) . '/';
-    }
-
-    public static function setItem(int $gameId, string $key, string $itemId): void
-    {
-        $items = self::items();
-        if ($itemId === '') {
-            unset($items[$gameId][$key]);
-        } else {
-            $items[$gameId][$key] = (int)$itemId;
-        }
-        self::$items = $items;
-        Settings::set('currency_items', json_encode($items, JSON_UNESCAPED_UNICODE));
-    }
-
-    public static function setBase(int $gameId, string $url): void
-    {
-        $bases = self::bases();
-        if ($url === '') {
-            unset($bases[$gameId]);
-        } else {
-            $bases[$gameId] = $url;
-        }
-        self::$bases = $bases;
-        Settings::set('game_icon_base', json_encode($bases, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        return self::$icons;
     }
 
     private static function fallback(): string
@@ -107,89 +21,46 @@ class CurrencyIcon
         return url('/assets/currency/default.png');
     }
 
-    /** URL ảnh cho 1 icon_id: ưu tiên đọc file trên ổ đĩa game server (proxy), nếu không dùng base URL */
-    public static function iconUrlFor(int $gameId, string $adapter, int $iconId): string
+    /** URL icon đã upload cho 1 loại tiền tệ (fallback ảnh mặc định nếu chưa có) */
+    public static function url(int $gameId, string $key): string
     {
-        if (self::iconPath($gameId) !== '') {
-            return url('/game-icon/' . $gameId . '/' . $iconId);
-        }
-        return self::iconBase($gameId, $adapter) . $iconId . '.png';
+        $u = self::icons()[$gameId][$key] ?? '';
+        return $u !== '' ? url($u) : self::fallback();
     }
 
-    /**
-     * URL icon của 1 loại tiền tệ. Cần PDO tới DB game để đọc icon_id.
-     * Nếu chưa gán item hoặc không đọc được -> ảnh fallback trung tính.
-     */
-    public static function url(int $gameId, string $adapter, string $key, ?PDO $gameDb): string
+    /** URL thô đã lưu (chưa qua url()), '' nếu chưa upload */
+    public static function raw(int $gameId, string $key): string
     {
-        $itemId = self::itemId($gameId, $key);
-        if ($itemId === null || !$gameDb) {
-            return self::fallback();
-        }
-        try {
-            $info = AdapterRegistry::forGame($adapter)->getItemIcon($gameDb, $itemId);
-        } catch (Throwable $e) {
-            $info = null;
-        }
-        if (!$info) {
-            return self::fallback();
-        }
-        return self::iconUrlFor($gameId, $adapter, (int)$info['icon_id']);
+        return (string)(self::icons()[$gameId][$key] ?? '');
     }
 
-    /**
-     * Map {gameId: {currency_key: iconUrl}} — kết nối server đầu tiên của mỗi game để đọc icon_id.
-     * $games: mảng game có id, adapter.
-     */
+    public static function set(int $gameId, string $key, string $url): void
+    {
+        $icons = self::icons();
+        if ($url === '') {
+            unset($icons[$gameId][$key]);
+        } else {
+            $icons[$gameId][$key] = $url;
+        }
+        self::$icons = $icons;
+        Settings::set('currency_icons', json_encode($icons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
+    /** Map {gameId: {currency_key: iconUrl}} để render (theo currencies của adapter) */
     public static function mapFor(array $games): array
     {
         $map = [];
         foreach ($games as $g) {
             $gid = (int)$g['id'];
-            $adapter = $g['adapter'];
             try {
-                $currencies = AdapterRegistry::forGame($adapter)->currencies();
+                $currencies = AdapterRegistry::forGame($g['adapter'])->currencies();
             } catch (Throwable $e) {
                 $currencies = [];
             }
-            // Server đầu tiên đang hoạt động của game (icon_id giống nhau giữa các server)
-            $server = DB::one(
-                'SELECT * FROM game_servers WHERE game_id = ? AND status = 1 ORDER BY sort_order, id LIMIT 1',
-                [$gid]
-            );
-            $gameDb = null;
-            if ($server) {
-                try {
-                    $gameDb = GameDB::forServer($server);
-                } catch (Throwable $e) {
-                    $gameDb = null;
-                }
-            }
             foreach ($currencies as $key => $label) {
-                $map[$gid][$key] = self::url($gid, $adapter, $key, $gameDb);
+                $map[$gid][$key] = self::url($gid, $key);
             }
         }
         return $map;
-    }
-
-    /** Preview icon cho admin: item name + icon url theo item hiện gán */
-    public static function adminInfo(int $gameId, string $adapter, string $key, ?PDO $gameDb): array
-    {
-        $itemId = self::itemId($gameId, $key);
-        $out = ['item_id' => $itemId, 'name' => '', 'url' => self::fallback()];
-        if ($itemId === null || !$gameDb) {
-            return $out;
-        }
-        try {
-            $info = AdapterRegistry::forGame($adapter)->getItemIcon($gameDb, $itemId);
-        } catch (Throwable $e) {
-            $info = null;
-        }
-        if ($info) {
-            $out['name'] = $info['name'];
-            $out['icon_id'] = (int)$info['icon_id'];
-            $out['url'] = self::iconUrlFor($gameId, $adapter, (int)$info['icon_id']);
-        }
-        return $out;
     }
 }

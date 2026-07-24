@@ -28,34 +28,21 @@ function admin_exchange_packages(): void
         $edit = DB::one('SELECT * FROM exchange_packages WHERE id = ?', [(int)get('edit')]);
     }
 
-    // Thông tin icon tiền tệ cho từng game (item đã gán + preview)
+    // Icon tiền tệ đã upload cho từng game
     $iconInfo = [];
     foreach ($games as $g) {
         $gid = (int)$g['id'];
-        $server = DB::one('SELECT * FROM game_servers WHERE game_id = ? AND status = 1 ORDER BY sort_order, id LIMIT 1', [$gid]);
-        $gameDb = null;
-        if ($server) {
-            try {
-                $gameDb = GameDB::forServer($server);
-            } catch (Throwable $e) {
-                $gameDb = null;
-            }
-        }
-        $iconInfo[$gid] = [
-            'has_server' => (bool)$server,
-            'base' => CurrencyIcon::iconBase($gid, $g['adapter']),
-            'path' => CurrencyIcon::iconPath($gid),
-            'currencies' => [],
-        ];
         try {
             $currencies = AdapterRegistry::forGame($g['adapter'])->currencies();
         } catch (Throwable $e) {
             $currencies = [];
         }
+        $iconInfo[$gid] = [];
         foreach ($currencies as $ckey => $clabel) {
-            $iconInfo[$gid]['currencies'][$ckey] = [
+            $iconInfo[$gid][$ckey] = [
                 'label' => $clabel,
-                'info' => CurrencyIcon::adminInfo($gid, $g['adapter'], $ckey, $gameDb),
+                'url' => CurrencyIcon::url($gid, $ckey),
+                'has' => CurrencyIcon::raw($gid, $ckey) !== '',
             ];
         }
     }
@@ -81,19 +68,21 @@ function admin_exchange_packages_save(): void
         redirect('/admin/exchange-packages');
     }
 
-    if ($action === 'save_currency_item') {
+    if ($action === 'save_currency_icon') {
         $gameId = (int)post('game_id');
         $currencyKey = (string)post('currency_key');
-        CurrencyIcon::setItem($gameId, $currencyKey, trim((string)post('item_id')));
-        flash_set('success', 'Đã gán item cho tiền tệ. Icon sẽ hiện theo item của game.');
-        redirect('/admin/exchange-packages');
-    }
-
-    if ($action === 'save_icon_base') {
-        $gameId = (int)post('game_id');
-        CurrencyIcon::setBase($gameId, trim((string)post('icon_base')));
-        CurrencyIcon::setPath($gameId, trim((string)post('icon_path')));
-        flash_set('success', 'Đã lưu nguồn icon của game.');
+        if (post('remove') === '1') {
+            CurrencyIcon::set($gameId, $currencyKey, '');
+            flash_set('success', 'Đã xoá icon, dùng lại ảnh mặc định.');
+            redirect('/admin/exchange-packages');
+        }
+        $icon = handle_upload('icon_file', 'uploads') ?? trim((string)post('icon_url'));
+        if ($gameId && $currencyKey !== '' && $icon !== '' && $icon !== null) {
+            CurrencyIcon::set($gameId, $currencyKey, $icon);
+            flash_set('success', 'Đã cập nhật icon tiền tệ.');
+        } else {
+            flash_set('error', 'Vui lòng chọn ảnh (jpg/png/webp/gif) hoặc nhập URL.');
+        }
         redirect('/admin/exchange-packages');
     }
 

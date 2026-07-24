@@ -165,15 +165,4 @@ class NroAdapter implements GameAdapter
         return ['columns' => ['Nhân vật', 'Sức mạnh', 'Đệ tử', 'Tổng'], 'rows' => $rows];
     }
 
-    public function getItemIcon(PDO $db, int $itemId): ?array
-    {
-        try {
-            $st = $db->prepare('SELECT icon_id, NAME FROM item_template WHERE id = ? LIMIT 1');
-            $st->execute([$itemId]);
-            $r = $st->fetch(PDO::FETCH_ASSOC);
-            return $r ? ['icon_id' => (int)$r['icon_id'], 'name' => (string)$r['NAME']] : null;
-        } catch (Throwable $e) {
-            return null;
-        }
-    }
 }

@@ -111,52 +111,30 @@
 </div>
 
 <div class="card">
-  <h2 class="card-title">Icon tiền tệ game (theo item trong DB game)</h2>
-  <p class="help-text" style="margin-bottom:14px">
-    Gán mỗi loại tiền tệ với 1 <b>item_id</b> trong bảng item của game — web đọc <code>icon_id</code> của item đó và hiện ảnh
-    từ bộ icon tại đường dẫn dưới đây (đặt file <code>&lt;icon_id&gt;.png</code> đã export từ client vào thư mục đó, hoặc trỏ CDN).
-  </p>
+  <h2 class="card-title">Icon tiền tệ game</h2>
+  <p class="help-text" style="margin-bottom:14px">Upload ảnh icon cho từng loại tiền tệ (jpg/png/webp/gif). Icon hiện ở trang Đổi xu; chưa upload thì dùng ảnh mặc định.</p>
 
-  <?php foreach ($games as $g): $gid = (int)$g['id']; $ii = $icon_info[$gid] ?? null; if (!$ii) continue; ?>
+  <?php foreach ($games as $g): $gid = (int)$g['id']; $currencies = $icon_info[$gid] ?? []; if (!$currencies) continue; ?>
     <div class="icon-game-block">
       <h3 class="icon-game-title"><?= e($g['name']) ?> <span class="muted">(<?= e($g['adapter']) ?>)</span></h3>
-      <?php if (!$ii['has_server']): ?>
-        <div class="alert alert-info" style="margin:8px 0">Chưa có server hoạt động cho game này — thêm server ở mục "Server game" để đọc được item.</div>
-      <?php endif; ?>
-
-      <form method="post" action="<?= url('/admin/exchange-packages') ?>" class="icon-base-form">
-        <?= Csrf::field() ?>
-        <input type="hidden" name="action" value="save_icon_base">
-        <input type="hidden" name="game_id" value="<?= $gid ?>">
-        <div style="flex:1;min-width:320px">
-          <label>Thư mục icon trên server game (tự động — ưu tiên nếu điền)</label>
-          <input type="text" name="icon_path" value="<?= e($ii['path']) ?>" placeholder="<?= e($g['adapter']) === 'nro' ? '/duong-dan/nro-server/data/icon/x1' : 'đường dẫn thư mục chứa &lt;icon_id&gt;.png' ?>">
-        </div>
-        <div style="flex:1;min-width:280px">
-          <label>Hoặc URL bộ icon đã export</label>
-          <input type="text" name="icon_base" value="<?= e($ii['base']) ?>" placeholder="/assets/game-icons/<?= e($g['adapter']) ?>/ hoặc https://cdn...">
-        </div>
-        <button type="submit" class="btn btn-sm">Lưu nguồn icon</button>
-      </form>
-      <?php if ($g['adapter'] === 'nro'): ?>
-        <p class="help-text" style="margin:-4px 0 10px">NRO: trỏ vào thư mục <code>data/icon/x1</code> của game server — web sẽ tự đọc file <code>&lt;icon_id&gt;.png</code>, không cần copy.</p>
-      <?php endif; ?>
-
       <div class="currency-icon-grid">
-        <?php foreach ($ii['currencies'] as $ckey => $c): $info = $c['info']; ?>
+        <?php foreach ($currencies as $ckey => $c): ?>
           <div class="currency-icon-item">
-            <img src="<?= e($info['url']) ?>" alt="" onerror="this.src='<?= url('/assets/currency/default.png') ?>'">
+            <img src="<?= e($c['url']) ?>" alt="" onerror="this.src='<?= url('/assets/currency/default.png') ?>'">
             <div class="currency-icon-meta">
               <b><?= e($c['label']) ?> <code><?= e($ckey) ?></code></b>
-              <span><?= $info['item_id'] ? 'Item #' . (int)$info['item_id'] . ($info['name'] ? ' — ' . e($info['name']) : '') : 'Chưa gán item' ?></span>
+              <span><?= $c['has'] ? 'Đã upload icon' : 'Đang dùng ảnh mặc định' ?></span>
             </div>
-            <form method="post" action="<?= url('/admin/exchange-packages') ?>" class="currency-icon-form">
+            <form method="post" action="<?= url('/admin/exchange-packages') ?>" enctype="multipart/form-data" class="currency-icon-form">
               <?= Csrf::field() ?>
-              <input type="hidden" name="action" value="save_currency_item">
+              <input type="hidden" name="action" value="save_currency_icon">
               <input type="hidden" name="game_id" value="<?= $gid ?>">
               <input type="hidden" name="currency_key" value="<?= e($ckey) ?>">
-              <input type="number" name="item_id" min="0" value="<?= $info['item_id'] !== null ? (int)$info['item_id'] : '' ?>" placeholder="item_id">
-              <button type="submit" class="btn btn-sm btn-primary">Gán</button>
+              <input type="file" name="icon_file" accept="image/*">
+              <button type="submit" class="btn btn-sm btn-primary">Upload</button>
+              <?php if ($c['has']): ?>
+                <button type="submit" name="remove" value="1" class="btn btn-sm btn-danger" onclick="return confirm('Xoá icon này?')">Xoá</button>
+              <?php endif; ?>
             </form>
           </div>
         <?php endforeach; ?>

@@ -30,5 +30,5 @@ ON DUPLICATE KEY UPDATE `k` = `k`;
 
 -- Icon tiền tệ theo item DB game
 INSERT INTO `settings` (`k`,`v`) VALUES
-('currency_items','[]'),('game_icon_base','[]'),('game_icon_path','[]')
+('currency_icons','[]')
 ON DUPLICATE KEY UPDATE `k` = `k`;
