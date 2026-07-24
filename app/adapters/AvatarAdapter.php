@@ -155,6 +155,30 @@ class AvatarAdapter implements GameAdapter
         }
     }
 
+    public function searchItems(PDO $db, string $q = '', int $limit = 50): array
+    {
+        $limit = max(1, min(100, $limit));
+        try {
+            $q = trim($q);
+            if ($q === '') {
+                $st = $db->query("SELECT id, name FROM items ORDER BY id LIMIT $limit");
+            } elseif (ctype_digit($q)) {
+                $st = $db->prepare("SELECT id, name FROM items WHERE id = ? OR name LIKE ? ORDER BY id LIMIT $limit");
+                $st->execute([(int)$q, '%' . $q . '%']);
+            } else {
+                $st = $db->prepare("SELECT id, name FROM items WHERE name LIKE ? ORDER BY id LIMIT $limit");
+                $st->execute(['%' . $q . '%']);
+            }
+            $out = [];
+            foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) {
+                $out[] = ['id' => (int)$r['id'], 'name' => (string)$r['name']];
+            }
+            return $out;
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
     public function giveItem(PDO $db, string $characterId, int $itemId, int $quantity): array
     {
         if ($quantity < 1) {

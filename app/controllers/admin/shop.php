@@ -1,13 +1,19 @@
 <?php
 /** Quản lý webshop: sản phẩm bán bằng xu, giao vật phẩm vào nhân vật */
 
+/** Server game đầu tiên (đọc danh mục vật phẩm — catalog giống nhau giữa các server) */
+function admin_shop_first_server(int $gameId): ?array
+{
+    return DB::one(
+        'SELECT * FROM game_servers WHERE game_id = ? AND status = 1 ORDER BY sort_order, id LIMIT 1',
+        [$gameId]
+    ) ?: null;
+}
+
 /** Tra tên vật phẩm trong DB game (dùng server đầu tiên của game) */
 function admin_shop_lookup_item_name(array $game, int $itemId): ?string
 {
-    $server = DB::one(
-        'SELECT * FROM game_servers WHERE game_id = ? AND status = 1 ORDER BY sort_order, id LIMIT 1',
-        [(int)$game['id']]
-    );
+    $server = admin_shop_first_server((int)$game['id']);
     if (!$server) {
         return null;
     }
@@ -56,6 +62,30 @@ function admin_shop_item_lookup(): void
         json_out(['success' => false, 'message' => 'Không tìm thấy vật phẩm id ' . $itemId . ' (hoặc chưa cấu hình server game).']);
     }
     json_out(['success' => true, 'name' => $name]);
+}
+
+/** AJAX: tìm/duyệt danh mục vật phẩm đồng bộ trực tiếp từ DB game */
+function admin_shop_item_search(): void
+{
+    Auth::requireAdmin();
+    $gameId = (int)get('game_id');
+    $q = (string)get('q');
+    $game = DB::one('SELECT * FROM games WHERE id = ?', [$gameId]);
+    if (!$game) {
+        json_out(['success' => false, 'message' => 'Chọn game trước.']);
+    }
+    $server = admin_shop_first_server($gameId);
+    if (!$server) {
+        json_out(['success' => false, 'message' => 'Game chưa có server để đọc danh mục vật phẩm.']);
+    }
+    try {
+        $adapter = AdapterRegistry::forGame($game['adapter']);
+        $gameDb = GameDB::forServer($server);
+        $items = $adapter->searchItems($gameDb, $q, 50);
+        json_out(['success' => true, 'items' => $items]);
+    } catch (Throwable $e) {
+        json_out(['success' => false, 'message' => 'Không kết nối được DB game.']);
+    }
 }
 
 function admin_shop_save(): void

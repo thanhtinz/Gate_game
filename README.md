@@ -16,7 +16,7 @@ Cổng game trung tâm cho nhiều game (hiện có **Ngọc Rồng Online** và
 **Admin (`/admin`)**
 - Quản lý game (mô tả, thumbnail, banner, link tải), server từng game (thông tin DB + nút kiểm tra kết nối).
 - Quản lý gói nạp xu, gói quy đổi từng game, đơn nạp, lịch sử quy đổi.
-- Webshop: thêm sản phẩm (chọn game + nhập ID vật phẩm trong game, nút *Kiểm tra tên* tra tên vật phẩm từ DB game, đặt giá xu, số lượng giao, tồn kho, ảnh sản phẩm); xem lịch sử mua.
+- Webshop: thêm sản phẩm bằng cách **chọn vật phẩm trực tiếp từ danh mục DB game** (ô tìm kiếm đồng bộ realtime từ `item_template` NRO / `items` Avatar theo tên hoặc ID), đặt giá xu, số lượng giao, tồn kho, ảnh sản phẩm; xem lịch sử mua.
 - Quản lý người dùng (khoá, cộng/trừ xu, reset mật khẩu).
 - Quản lý tin tức/sự kiện, banner, giftcode (kèm icon vật phẩm hiển thị).
 - Cấu hình website + SePay.

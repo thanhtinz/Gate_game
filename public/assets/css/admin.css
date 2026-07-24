@@ -248,6 +248,38 @@ input.input-sm { width: 90px; }
   color: var(--text-muted);
   font-size: 0.82rem;
 }
+/* Item picker (đồng bộ danh mục vật phẩm từ DB game) */
+.item-picker { position: relative; }
+.item-picker > input[type="text"] { width: 100%; }
+.item-picker-results {
+  display: none;
+  position: absolute;
+  z-index: 20;
+  left: 0; right: 0;
+  margin-top: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--card, #fff);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+.item-picker-results.open { display: block; }
+.item-picker-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--border, #eee);
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: inherit;
+}
+.item-picker-row:hover { background: rgba(79,140,255,.12); }
+.item-picker-row code { margin-right: 6px; opacity: .8; }
+.item-picker-msg { padding: 10px 12px; color: var(--text-muted); font-size: 0.85rem; }
 .img-preview {
   display: block;
   margin-top: 8px;

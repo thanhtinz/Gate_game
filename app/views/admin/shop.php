@@ -18,10 +18,16 @@
         </select>
       </div>
       <div class="form-group">
-        <label>ID vật phẩm trong game *</label>
-        <input type="number" name="item_id" id="shop-item-id" required min="0" value="<?= $isEdit ? (int)$edit['item_id'] : '' ?>" placeholder="VD: 12">
-        <small class="help-text" id="shop-item-name">Nhập ID rồi bấm <b>Kiểm tra tên</b> để xác nhận đúng vật phẩm.</small>
-        <button type="button" class="btn btn-sm" id="shop-lookup-btn" style="margin-top:6px">Kiểm tra tên</button>
+        <label>Vật phẩm trong game *</label>
+        <div class="item-picker">
+          <input type="text" id="shop-item-search" autocomplete="off" placeholder="Tìm theo tên hoặc ID vật phẩm (đồng bộ từ DB game)">
+          <input type="hidden" name="item_id" id="shop-item-id" value="<?= $isEdit ? (int)$edit['item_id'] : '' ?>">
+          <div class="item-picker-results" id="shop-item-results"></div>
+        </div>
+        <small class="help-text" id="shop-item-name">
+          <?php if ($isEdit): ?>Đang chọn: <b>#<?= (int)$edit['item_id'] ?></b>. <?php endif; ?>
+          Chọn game rồi tìm để lấy danh mục vật phẩm trực tiếp từ server game.
+        </small>
       </div>
     </div>
 
@@ -126,26 +132,58 @@
 <script>
 (function () {
   var BASE = <?= json_encode(rtrim(config('base_path', ''), '/'), JSON_UNESCAPED_SLASHES) ?>;
-  var btn = document.getElementById('shop-lookup-btn');
+  var gameSel = document.getElementById('shop-game');
+  var search = document.getElementById('shop-item-search');
+  var idInput = document.getElementById('shop-item-id');
+  var results = document.getElementById('shop-item-results');
   var out = document.getElementById('shop-item-name');
   var nameInput = document.getElementById('shop-name');
-  if (!btn) return;
-  btn.addEventListener('click', function () {
-    var gid = document.getElementById('shop-game').value;
-    var iid = document.getElementById('shop-item-id').value;
-    if (!gid || iid === '') { out.textContent = 'Chọn game và nhập ID vật phẩm trước.'; return; }
-    out.textContent = 'Đang tra...';
-    fetch(BASE + '/admin/shop/item-lookup?game_id=' + encodeURIComponent(gid) + '&item_id=' + encodeURIComponent(iid), { credentials: 'same-origin' })
+  if (!search) return;
+  var timer = null;
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+  function pick(item) {
+    idInput.value = item.id;
+    search.value = '#' + item.id + ' — ' + item.name;
+    out.innerHTML = 'Đã chọn: <b>#' + item.id + ' ' + esc(item.name) + '</b>';
+    if (nameInput && !nameInput.value) nameInput.value = item.name;
+    results.innerHTML = '';
+    results.classList.remove('open');
+  }
+
+  function doSearch() {
+    var gid = gameSel.value;
+    if (!gid) { results.innerHTML = '<div class="item-picker-msg">Chọn game trước.</div>'; results.classList.add('open'); return; }
+    results.innerHTML = '<div class="item-picker-msg">Đang tải danh mục...</div>';
+    results.classList.add('open');
+    fetch(BASE + '/admin/shop/item-search?game_id=' + encodeURIComponent(gid) + '&q=' + encodeURIComponent(search.value.trim()), { credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
       .then(function (res) {
-        if (res.success) {
-          out.innerHTML = 'Vật phẩm: <b>' + (res.name || '').replace(/[<>&]/g, '') + '</b>';
-          if (nameInput && !nameInput.value) nameInput.value = res.name;
-        } else {
-          out.textContent = res.message || 'Không tìm thấy.';
-        }
+        if (!res.success) { results.innerHTML = '<div class="item-picker-msg">' + esc(res.message || 'Lỗi') + '</div>'; return; }
+        if (!res.items.length) { results.innerHTML = '<div class="item-picker-msg">Không có vật phẩm khớp.</div>'; return; }
+        results.innerHTML = '';
+        res.items.forEach(function (it) {
+          var row = document.createElement('button');
+          row.type = 'button';
+          row.className = 'item-picker-row';
+          row.innerHTML = '<code>#' + it.id + '</code> ' + esc(it.name);
+          row.addEventListener('click', function () { pick(it); });
+          results.appendChild(row);
+        });
       })
-      .catch(function () { out.textContent = 'Lỗi kết nối.'; });
+      .catch(function () { results.innerHTML = '<div class="item-picker-msg">Lỗi kết nối DB game.</div>'; });
+  }
+
+  search.addEventListener('input', function () {
+    idInput.value = '';
+    clearTimeout(timer);
+    timer = setTimeout(doSearch, 300);
+  });
+  search.addEventListener('focus', function () { if (!results.children.length) doSearch(); });
+  gameSel.addEventListener('change', function () { idInput.value = ''; search.value = ''; results.innerHTML = ''; results.classList.remove('open'); });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.item-picker')) results.classList.remove('open');
   });
 })();
 </script>

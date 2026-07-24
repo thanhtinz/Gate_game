@@ -62,6 +62,7 @@ function routes(): array
         'GET /admin/shop'            => ['admin/shop.php', 'admin_shop'],
         'POST /admin/shop'           => ['admin/shop.php', 'admin_shop_save'],
         'GET /admin/shop/item-lookup' => ['admin/shop.php', 'admin_shop_item_lookup'],
+        'GET /admin/shop/item-search' => ['admin/shop.php', 'admin_shop_item_search'],
         'GET /admin/shop-orders'     => ['admin/orders.php', 'admin_shop_orders'],
         'GET /admin/users'           => ['admin/users.php', 'admin_users'],
         'POST /admin/users'          => ['admin/users.php', 'admin_users_save'],

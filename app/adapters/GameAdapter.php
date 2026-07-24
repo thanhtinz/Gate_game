@@ -41,6 +41,12 @@ interface GameAdapter
     public function getItemName(PDO $db, int $itemId): ?string;
 
     /**
+     * Tìm/duyệt danh mục vật phẩm đọc trực tiếp từ DB game (đồng bộ webshop).
+     * $q rỗng = liệt kê từ đầu. Trả về [['id'=>int,'name'=>string], ...]
+     */
+    public function searchItems(PDO $db, string $q = '', int $limit = 50): array;
+
+    /**
      * Giao vật phẩm vào rương nhân vật (webshop). Bắt buộc nhân vật offline.
      * Trả về [ok, message]
      */
