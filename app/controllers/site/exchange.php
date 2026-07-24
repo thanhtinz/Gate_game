@@ -22,6 +22,7 @@ function exchange_index(): void
         'games' => $games,
         'packagesByGame' => $packagesByGame,
         'currencyLabels' => $currencyLabels,
+        'currencyIcons' => CurrencyIcon::mapFor($games),
     ]);
 }
 

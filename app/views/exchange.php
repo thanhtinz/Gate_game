@@ -36,4 +36,6 @@
 <script>
 window.EXCHANGE_PACKAGES = <?= json_encode($packagesByGame, JSON_UNESCAPED_UNICODE) ?>;
 window.CURRENCY_LABELS = <?= json_encode($currencyLabels, JSON_UNESCAPED_UNICODE) ?>;
+window.CURRENCY_ICONS = <?= json_encode($currencyIcons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+window.BASE_URL = <?= json_encode(rtrim(config('base_path', ''), '/'), JSON_UNESCAPED_SLASHES) ?>;
 </script>

@@ -139,4 +139,16 @@ class AvatarAdapter implements GameAdapter
         }
         return ['columns' => ['Nhân vật', 'Level', 'EXP', 'Điểm'], 'rows' => $rows];
     }
+
+    public function getItemIcon(PDO $db, int $itemId): ?array
+    {
+        try {
+            $st = $db->prepare('SELECT icon, name FROM items WHERE id = ? LIMIT 1');
+            $st->execute([$itemId]);
+            $r = $st->fetch(PDO::FETCH_ASSOC);
+            return $r ? ['icon_id' => (int)$r['icon'], 'name' => (string)$r['name']] : null;
+        } catch (Throwable $e) {
+            return null;
+        }
+    }
 }

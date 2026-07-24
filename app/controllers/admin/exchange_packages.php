@@ -28,12 +28,44 @@ function admin_exchange_packages(): void
         $edit = DB::one('SELECT * FROM exchange_packages WHERE id = ?', [(int)get('edit')]);
     }
 
+    // Thông tin icon tiền tệ cho từng game (item đã gán + preview)
+    $iconInfo = [];
+    foreach ($games as $g) {
+        $gid = (int)$g['id'];
+        $server = DB::one('SELECT * FROM game_servers WHERE game_id = ? AND status = 1 ORDER BY sort_order, id LIMIT 1', [$gid]);
+        $gameDb = null;
+        if ($server) {
+            try {
+                $gameDb = GameDB::forServer($server);
+            } catch (Throwable $e) {
+                $gameDb = null;
+            }
+        }
+        $iconInfo[$gid] = [
+            'has_server' => (bool)$server,
+            'base' => CurrencyIcon::iconBase($gid, $g['adapter']),
+            'currencies' => [],
+        ];
+        try {
+            $currencies = AdapterRegistry::forGame($g['adapter'])->currencies();
+        } catch (Throwable $e) {
+            $currencies = [];
+        }
+        foreach ($currencies as $ckey => $clabel) {
+            $iconInfo[$gid]['currencies'][$ckey] = [
+                'label' => $clabel,
+                'info' => CurrencyIcon::adminInfo($gid, $g['adapter'], $ckey, $gameDb),
+            ];
+        }
+    }
+
     admin_view('exchange_packages', [
         'title' => 'Gói quy đổi',
         'games' => $games,
         'packages' => $packages,
         'edit' => $edit,
         'currency_map' => admin_exchange_currency_map($games),
+        'icon_info' => $iconInfo,
     ]);
 }
 
@@ -45,6 +77,21 @@ function admin_exchange_packages_save(): void
     if ($action === 'delete') {
         DB::query('DELETE FROM exchange_packages WHERE id = ?', [(int)post('id')]);
         flash_set('success', 'Đã xoá gói quy đổi.');
+        redirect('/admin/exchange-packages');
+    }
+
+    if ($action === 'save_currency_item') {
+        $gameId = (int)post('game_id');
+        $currencyKey = (string)post('currency_key');
+        CurrencyIcon::setItem($gameId, $currencyKey, trim((string)post('item_id')));
+        flash_set('success', 'Đã gán item cho tiền tệ. Icon sẽ hiện theo item của game.');
+        redirect('/admin/exchange-packages');
+    }
+
+    if ($action === 'save_icon_base') {
+        $gameId = (int)post('game_id');
+        CurrencyIcon::setBase($gameId, trim((string)post('icon_base')));
+        flash_set('success', 'Đã lưu đường dẫn bộ icon của game.');
         redirect('/admin/exchange-packages');
     }
 

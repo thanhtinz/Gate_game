@@ -27,3 +27,8 @@ ALTER TABLE `users` ADD COLUMN `google_id` VARCHAR(30) DEFAULT NULL UNIQUE AFTER
 INSERT INTO `settings` (`k`,`v`) VALUES
 ('google_enabled','0'),('google_client_id',''),('google_client_secret','')
 ON DUPLICATE KEY UPDATE `k` = `k`;
+
+-- Icon tiền tệ theo item DB game
+INSERT INTO `settings` (`k`,`v`) VALUES
+('currency_items','[]'),('game_icon_base','[]')
+ON DUPLICATE KEY UPDATE `k` = `k`;

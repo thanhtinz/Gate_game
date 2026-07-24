@@ -228,6 +228,8 @@ INSERT INTO `settings` (`k`,`v`) VALUES
 ('smtp_pass', ''),
 ('smtp_from', ''),                      -- email người gửi (mặc định = smtp_user)
 ('smtp_from_name', 'Gate Game'),
+('currency_items', '[]'),      -- gan tien te game voi item_id trong DB game
+('game_icon_base', '[]'),
 -- Đăng nhập Google (OAuth 2.0)
 ('google_enabled', '0'),
 ('google_client_id', ''),

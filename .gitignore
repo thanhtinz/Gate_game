@@ -1,2 +1,3 @@
 config.php
 public/uploads/
+public/assets/game-icons/*/*.png

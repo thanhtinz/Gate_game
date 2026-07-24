@@ -439,3 +439,20 @@ input.input-sm { width: 90px; }
 .sidebar-logo .ic { vertical-align: -0.2em; margin-right: 6px; }
 .sidebar-footer .ic { width: 15px; height: 15px; vertical-align: -0.2em; margin-right: 5px; }
 .data-table .ic { vertical-align: -0.15em; }
+
+/* Icon tiền tệ game */
+.currency-icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.currency-icon-item { display: flex; align-items: center; gap: 12px; background: var(--bg2, #0f1420); border: 1px solid var(--border); border-radius: 12px; padding: 12px; flex-wrap: wrap; }
+.currency-icon-item > img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+.currency-icon-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 90px; }
+.currency-icon-meta span { font-size: 12px; color: #8b96b0; }
+.currency-icon-form { display: flex; align-items: center; gap: 6px; width: 100%; }
+.currency-icon-form input[type=file] { flex: 1; font-size: 12px; }
+
+.icon-game-block { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
+.icon-game-block:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+.icon-game-title { font-size: 15px; margin-bottom: 10px; }
+.icon-base-form { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.icon-base-form label { display: block; font-size: 12px; color: #8b96b0; margin-bottom: 3px; }
+.icon-base-form input { min-width: 320px; flex: 1; }
+.currency-icon-form input[type=number] { width: 100px; }

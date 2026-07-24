@@ -108,6 +108,14 @@ Mỗi server là một DB riêng → mở thêm server chỉ cần thêm dòng m
 
 Lưu ý khi quy đổi tiền tệ ghi trực tiếp vào nhân vật (ngọc/vàng NRO, lượng/xu Avatar): cổng **bắt buộc nhân vật offline** để server game không ghi đè dữ liệu khi lưu. Riêng ví VNĐ trong game (NRO `account.vnd`) cộng được cả khi online.
 
+### Icon tiền tệ (lấy từ item trong DB game)
+
+Ở trang Đổi xu, mỗi gói hiện icon đúng của tiền tệ game. Cách hoạt động:
+
+1. Admin → **Gói quy đổi** → mục *Icon tiền tệ game*: gán mỗi loại tiền tệ (ngọc/vàng/lượng...) với một **item_id** trong bảng item của game (`item_template` của NRO, `items` của Avatar). Web đọc `icon_id` của item đó trực tiếp từ DB game, kèm hiển thị tên item để đối chiếu.
+2. Ảnh icon lấy từ bộ icon đã **export từ client game** đặt tại `public/assets/game-icons/<adapter>/<icon_id>.png` (hoặc trỏ CDN qua ô *Đường dẫn bộ icon*). Icon của game nằm trong texture Unity (NRO) / file `.av` (Avatar) nên cần export một lần rồi bỏ vào thư mục này.
+3. Chưa gán item hoặc thiếu file icon → hiện ảnh mặc định trung tính `/assets/currency/default.png`.
+
 ## Thêm game mới
 
 1. Viết adapter mới trong `app/adapters/` implement `GameAdapter` (mẫu: `NroAdapter.php`, `AvatarAdapter.php`): kiểm tra schema, tạo tài khoản, danh sách nhân vật, cộng tiền tệ, BXH.

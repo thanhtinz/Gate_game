@@ -95,6 +95,8 @@
     var gid = selGame ? selGame.value : '';
     var list = window.EXCHANGE_PACKAGES[gid] || [];
     var labels = (window.CURRENCY_LABELS || {})[gid] || {};
+    var icons = (window.CURRENCY_ICONS || {})[gid] || {};
+    var baseUrl = window.BASE_URL || '';
     pkgWrap.innerHTML = '';
     if (!gid || !list.length) {
       if (pkgArea) pkgArea.classList.add('hidden');
@@ -102,10 +104,12 @@
     }
     list.forEach(function (p) {
       var label = labels[p.currency_key] || p.currency_key;
+      var iconUrl = icons[p.currency_key] || '';
       var el = document.createElement('label');
       el.className = 'package-card selectable';
       el.innerHTML =
         '<input type="radio" name="package_id" value="' + p.id + '" required>' +
+        (iconUrl ? '<img class="pkg-cur-icon" src="' + baseUrl + esc(iconUrl) + '" alt="' + esc(label) + '">' : '') +
         '<h3></h3>' +
         '<div class="package-xu"></div>' +
         (parseInt(p.bonus_amount, 10) > 0 ? '<div class="package-bonus"></div>' : '') +

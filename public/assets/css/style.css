@@ -347,3 +347,6 @@ select[disabled] { opacity: .55; }
 
 /* Quick actions gọn (chỉ icon + tên) */
 .qa-item { gap: 8px; padding: 18px 10px; }
+
+/* Icon tiền tệ trong gói quy đổi */
+.pkg-cur-icon { width: 46px; height: 46px; object-fit: contain; display: block; margin: 2px auto 6px; image-rendering: auto; }

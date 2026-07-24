@@ -36,4 +36,10 @@ interface GameAdapter
 
     /** Bảng xếp hạng: ['columns' => [nhãn cột...], 'rows' => [[giá trị...], ...]] */
     public function getRankings(PDO $db, int $limit = 50): array;
+
+    /**
+     * Đọc thông tin item từ DB game theo item id (để lấy icon tiền tệ).
+     * Trả về ['icon_id' => int, 'name' => string] hoặc null nếu không có.
+     */
+    public function getItemIcon(PDO $db, int $itemId): ?array;
 }

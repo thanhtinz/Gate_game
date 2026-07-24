@@ -110,6 +110,52 @@
 </div>
 </div>
 
+<div class="card">
+  <h2 class="card-title">Icon tiền tệ game (theo item trong DB game)</h2>
+  <p class="help-text" style="margin-bottom:14px">
+    Gán mỗi loại tiền tệ với 1 <b>item_id</b> trong bảng item của game — web đọc <code>icon_id</code> của item đó và hiện ảnh
+    từ bộ icon tại đường dẫn dưới đây (đặt file <code>&lt;icon_id&gt;.png</code> đã export từ client vào thư mục đó, hoặc trỏ CDN).
+  </p>
+
+  <?php foreach ($games as $g): $gid = (int)$g['id']; $ii = $icon_info[$gid] ?? null; if (!$ii) continue; ?>
+    <div class="icon-game-block">
+      <h3 class="icon-game-title"><?= e($g['name']) ?> <span class="muted">(<?= e($g['adapter']) ?>)</span></h3>
+      <?php if (!$ii['has_server']): ?>
+        <div class="alert alert-info" style="margin:8px 0">Chưa có server hoạt động cho game này — thêm server ở mục "Server game" để đọc được item.</div>
+      <?php endif; ?>
+
+      <form method="post" action="<?= url('/admin/exchange-packages') ?>" class="icon-base-form">
+        <?= Csrf::field() ?>
+        <input type="hidden" name="action" value="save_icon_base">
+        <input type="hidden" name="game_id" value="<?= $gid ?>">
+        <label>Đường dẫn bộ icon</label>
+        <input type="text" name="icon_base" value="<?= e($ii['base']) ?>" placeholder="/assets/game-icons/<?= e($g['adapter']) ?>/ hoặc https://cdn...">
+        <button type="submit" class="btn btn-sm">Lưu đường dẫn</button>
+      </form>
+
+      <div class="currency-icon-grid">
+        <?php foreach ($ii['currencies'] as $ckey => $c): $info = $c['info']; ?>
+          <div class="currency-icon-item">
+            <img src="<?= e($info['url']) ?>" alt="" onerror="this.src='<?= url('/assets/currency/default.png') ?>'">
+            <div class="currency-icon-meta">
+              <b><?= e($c['label']) ?> <code><?= e($ckey) ?></code></b>
+              <span><?= $info['item_id'] ? 'Item #' . (int)$info['item_id'] . ($info['name'] ? ' — ' . e($info['name']) : '') : 'Chưa gán item' ?></span>
+            </div>
+            <form method="post" action="<?= url('/admin/exchange-packages') ?>" class="currency-icon-form">
+              <?= Csrf::field() ?>
+              <input type="hidden" name="action" value="save_currency_item">
+              <input type="hidden" name="game_id" value="<?= $gid ?>">
+              <input type="hidden" name="currency_key" value="<?= e($ckey) ?>">
+              <input type="number" name="item_id" min="0" value="<?= $info['item_id'] !== null ? (int)$info['item_id'] : '' ?>" placeholder="item_id">
+              <button type="submit" class="btn btn-sm btn-primary">Gán</button>
+            </form>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
+
 <script>
 var CURRENCY_MAP = <?= json_encode($currency_map, JSON_UNESCAPED_UNICODE) ?>;
 var SELECTED_CURRENCY = <?= json_encode($edit['currency_key'] ?? '') ?>;
