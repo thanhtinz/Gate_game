@@ -31,7 +31,6 @@
   </div>
 
   <button class="btn btn-primary btn-lg" type="submit" <?= $me ? '' : 'disabled' ?>>Xác nhận quy đổi</button>
-  <p class="muted small"><?= icon('warning') ?> Với tiền tệ cộng trực tiếp vào nhân vật, hãy <b>thoát game</b> trước khi quy đổi để không bị server game ghi đè.</p>
 </form>
 
 <script>

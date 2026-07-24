@@ -30,7 +30,6 @@
 
   <div class="card">
     <h2><?= icon('key') ?> Đổi mật khẩu</h2>
-    <p class="muted small">Mật khẩu mới sẽ được đồng bộ xuống tất cả game.</p>
     <form method="post" action="<?= url('/doi-mat-khau') ?>">
       <?= Csrf::field() ?>
       <label>Mật khẩu hiện tại</label>

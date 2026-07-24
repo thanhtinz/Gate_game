@@ -14,30 +14,30 @@
 <?php endif; ?>
 
 <div class="quick-actions">
-  <a href="<?= url('/nap-xu') ?>" class="qa-item"><span class="qa-icon"><?= icon('wallet') ?></span><b>Nạp xu</b><span class="muted small">QR ngân hàng, tự động 24/7</span></a>
-  <a href="<?= url('/doi-xu') ?>" class="qa-item"><span class="qa-icon"><?= icon('exchange') ?></span><b>Đổi xu</b><span class="muted small">Quy đổi ra tiền tệ game</span></a>
-  <a href="<?= url('/giftcode') ?>" class="qa-item"><span class="qa-icon"><?= icon('gift') ?></span><b>Giftcode</b><span class="muted small">Nhập code nhận quà</span></a>
-  <a href="<?= url('/bxh') ?>" class="qa-item"><span class="qa-icon"><?= icon('trophy') ?></span><b>Xếp hạng</b><span class="muted small">Đua top mỗi server</span></a>
+  <a href="<?= url('/nap-xu') ?>" class="qa-item"><span class="qa-icon"><?= icon('wallet') ?></span><b>Nạp xu</b></a>
+  <a href="<?= url('/doi-xu') ?>" class="qa-item"><span class="qa-icon"><?= icon('exchange') ?></span><b>Đổi xu</b></a>
+  <a href="<?= url('/giftcode') ?>" class="qa-item"><span class="qa-icon"><?= icon('gift') ?></span><b>Giftcode</b></a>
+  <a href="<?= url('/bxh') ?>" class="qa-item"><span class="qa-icon"><?= icon('trophy') ?></span><b>Xếp hạng</b></a>
 </div>
 
 <section class="section">
   <h2 class="section-title"><?= icon('gamepad') ?> Danh sách game</h2>
-  <div class="game-grid">
+  <div class="game-list">
     <?php if (!$games): ?><p class="muted">Chưa có game nào.</p><?php endif; ?>
     <?php foreach ($games as $g): ?>
-      <a class="game-card" href="<?= url('/game/' . $g['slug']) ?>">
-        <div class="game-thumb">
+      <a class="game-row" href="<?= url('/game/' . $g['slug']) ?>">
+        <span class="game-icon">
           <?php if ($g['thumbnail']): ?>
             <img src="<?= e(url($g['thumbnail'])) ?>" alt="<?= e($g['name']) ?>">
           <?php else: ?>
-            <div class="thumb-placeholder"><?= icon('gamepad', 'ic-lg') ?></div>
+            <?= icon('gamepad', 'ic-lg') ?>
           <?php endif; ?>
-        </div>
-        <div class="game-card-body">
-          <h3><?= e($g['name']) ?></h3>
-          <p><?= e($g['short_desc']) ?></p>
-          <span class="btn btn-sm btn-primary">Chi tiết & Tải game</span>
-        </div>
+        </span>
+        <span class="game-row-info">
+          <b><?= e($g['name']) ?></b>
+          <span class="game-row-desc"><?= e($g['short_desc']) ?></span>
+        </span>
+        <span class="btn btn-sm btn-primary game-row-btn"><?= icon('download') ?> Tải</span>
       </a>
     <?php endforeach; ?>
   </div>

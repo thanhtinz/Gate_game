@@ -1,5 +1,4 @@
 <h1 class="page-heading"><?= icon('wallet') ?> Nạp xu</h1>
-<p class="muted">Nạp xu trên web qua chuyển khoản (SePay), sau đó vào mục <a href="<?= url('/doi-xu') ?>">Đổi xu</a> để quy đổi ra tiền tệ trong game.</p>
 
 <?php if (!$sepayEnabled): ?>
   <div class="alert alert-error">Phương thức nạp đang tạm đóng, vui lòng quay lại sau.</div>
