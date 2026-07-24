@@ -131,6 +131,93 @@
     selGame.dispatchEvent(new Event('change'));
   }
 
+  /* ---------- Webshop: chọn sản phẩm -> server -> nhân vật ---------- */
+  var shopGrid = document.getElementById('shopGrid');
+  if (shopGrid) {
+    var shopProductId = document.getElementById('shopProductId');
+    var shopServer = document.getElementById('shopServer');
+    var shopChar = document.getElementById('shopChar');
+    var shopPanel = document.getElementById('shopBuyPanel');
+    var shopBuyName = document.getElementById('shopBuyName');
+    var productNames = {};
+    (window.SHOP_PRODUCTS || []).forEach(function (p) { productNames[p.id] = p.name; });
+
+    function selectProduct(card) {
+      var pid = card.getAttribute('data-product');
+      var gid = card.getAttribute('data-game');
+      shopProductId.value = pid;
+      var cards = shopGrid.querySelectorAll('.shop-card');
+      for (var i = 0; i < cards.length; i++) cards[i].classList.toggle('selected', cards[i] === card);
+      if (shopBuyName) shopBuyName.textContent = productNames[pid] || '';
+      shopPanel.classList.remove('hidden');
+      // Nạp server của game tương ứng
+      resetSelect(shopServer, '— Đang tải... —');
+      resetSelect(shopChar, '— Chọn server trước —');
+      api('/api/servers?game_id=' + encodeURIComponent(gid)).then(function (res) {
+        resetSelect(shopServer, '— Chọn server —');
+        if (res.success && res.servers.length) {
+          res.servers.forEach(function (s) {
+            var o = document.createElement('option');
+            o.value = s.id;
+            o.textContent = s.name + (s.note ? ' — ' + s.note : '');
+            shopServer.appendChild(o);
+          });
+          shopServer.disabled = false;
+        } else {
+          resetSelect(shopServer, '— Game chưa có server —');
+        }
+      }).catch(function () { resetSelect(shopServer, '— Lỗi tải server —'); });
+      shopPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    shopGrid.addEventListener('click', function (e) {
+      var card = e.target.closest('.shop-card');
+      if (card) selectProduct(card);
+    });
+    shopGrid.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var card = e.target.closest('.shop-card');
+      if (card) { e.preventDefault(); selectProduct(card); }
+    });
+
+    if (shopServer && shopChar) {
+      shopServer.addEventListener('change', function () {
+        resetSelect(shopChar, '— Đang tải... —');
+        if (!shopServer.value) { resetSelect(shopChar, '— Chọn server trước —'); return; }
+        api('/api/characters?server_id=' + encodeURIComponent(shopServer.value)).then(function (res) {
+          resetSelect(shopChar, '— Chọn nhân vật —');
+          if (res.success && res.characters.length) {
+            res.characters.forEach(function (c) {
+              var o = document.createElement('option');
+              o.value = c.id;
+              o.textContent = c.name + (c.info ? ' (' + c.info + ')' : '');
+              shopChar.appendChild(o);
+            });
+            shopChar.disabled = false;
+          } else if (res.success) {
+            resetSelect(shopChar, '— Tài khoản chưa có nhân vật (vào game tạo trước) —');
+          } else {
+            resetSelect(shopChar, '— ' + (res.message || 'Lỗi') + ' —');
+          }
+        }).catch(function () { resetSelect(shopChar, '— Lỗi tải nhân vật —'); });
+      });
+    }
+
+    // Lọc sản phẩm theo game
+    var shopFilter = document.getElementById('shopFilter');
+    if (shopFilter) {
+      shopFilter.addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip');
+        if (!chip) return;
+        var g = chip.getAttribute('data-game');
+        shopFilter.querySelectorAll('.chip').forEach(function (c) { c.classList.toggle('active', c === chip); });
+        shopGrid.querySelectorAll('.shop-card').forEach(function (card) {
+          card.style.display = (!g || card.getAttribute('data-game') === g) ? '' : 'none';
+        });
+      });
+    }
+  }
+
   /* ---------- Giftcode preview: hiện quà ngay dưới ô nhập ---------- */
   var giftInput = document.getElementById('giftcodeInput');
   var giftPreview = document.getElementById('giftcodePreview');

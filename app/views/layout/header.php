@@ -29,6 +29,7 @@ $flash = flash_get();
       <a href="<?= url('/tin-tuc') ?>"><?= icon('news') ?>Tin tức</a>
       <a href="<?= url('/nap-xu') ?>"><?= icon('wallet') ?>Nạp xu</a>
       <a href="<?= url('/doi-xu') ?>"><?= icon('exchange') ?>Đổi xu</a>
+      <a href="<?= url('/shop') ?>"><?= icon('cart') ?>Shop</a>
       <a href="<?= url('/giftcode') ?>"><?= icon('gift') ?>Giftcode</a>
       <a href="<?= url('/bxh') ?>"><?= icon('trophy') ?>Xếp hạng</a>
     </nav>

@@ -9,12 +9,14 @@ Cổng game trung tâm cho nhiều game (hiện có **Ngọc Rồng Online** và
 - Trang chủ: banner, danh sách game, tin tức, sự kiện. Trang chi tiết game kèm link tải.
 - Nạp xu web qua **SePay** (QR chuyển khoản, tự cộng xu qua webhook).
 - Đổi xu: chọn game → chọn server → chọn nhân vật → chọn gói quy đổi ra tiền tệ game (vàng/ngọc NRO, lượng/xu Avatar...).
+- Webshop: mua vật phẩm bằng xu — chọn sản phẩm → server → nhân vật → xác nhận; hệ thống trừ xu và giao thẳng vật phẩm vào túi đồ/rương nhân vật (bắt buộc nhân vật offline). Giao thất bại tự hoàn xu.
 - Giftcode: chọn game → server → nhân vật → nhập mã; icon vật phẩm hiện ngay dưới ô nhập; mỗi user nhập 1 lần, nhập xong code tự ẩn với user đó.
 - Bảng xếp hạng: chọn game → chọn server → hiện BXH đọc trực tiếp từ DB game.
 
 **Admin (`/admin`)**
 - Quản lý game (mô tả, thumbnail, banner, link tải), server từng game (thông tin DB + nút kiểm tra kết nối).
 - Quản lý gói nạp xu, gói quy đổi từng game, đơn nạp, lịch sử quy đổi.
+- Webshop: thêm sản phẩm (chọn game + nhập ID vật phẩm trong game, nút *Kiểm tra tên* tra tên vật phẩm từ DB game, đặt giá xu, số lượng giao, tồn kho, ảnh sản phẩm); xem lịch sử mua.
 - Quản lý người dùng (khoá, cộng/trừ xu, reset mật khẩu).
 - Quản lý tin tức/sự kiện, banner, giftcode (kèm icon vật phẩm hiển thị).
 - Cấu hình website + SePay.

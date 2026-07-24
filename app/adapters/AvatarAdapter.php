@@ -140,4 +140,68 @@ class AvatarAdapter implements GameAdapter
         return ['columns' => ['Nhân vật', 'Level', 'EXP', 'Điểm'], 'rows' => $rows];
     }
 
+    public function getItemName(PDO $db, int $itemId): ?string
+    {
+        try {
+            $st = $db->prepare('SELECT name FROM items WHERE id = ? LIMIT 1');
+            $st->execute([$itemId]);
+            $row = $st->fetch(PDO::FETCH_ASSOC);
+            if (!$row) {
+                return null;
+            }
+            return (string)$row['name'];
+        } catch (Throwable $e) {
+            return null;
+        }
+    }
+
+    public function giveItem(PDO $db, string $characterId, int $itemId, int $quantity): array
+    {
+        if ($quantity < 1) {
+            return [false, 'Số lượng không hợp lệ'];
+        }
+        try {
+            $db->beginTransaction();
+            $st = $db->prepare('SELECT id, is_online, chests FROM players WHERE id = ? LIMIT 1 FOR UPDATE');
+            $st->execute([$characterId]);
+            $p = $st->fetch(PDO::FETCH_ASSOC);
+            if (!$p) {
+                $db->rollBack();
+                return [false, 'Không tìm thấy nhân vật'];
+            }
+            // Server Avatar ghi đè players khi lưu -> bắt buộc offline
+            if ((int)$p['is_online'] === 1) {
+                $db->rollBack();
+                return [false, 'Nhân vật đang online. Vui lòng thoát game rồi nhận vật phẩm lại.'];
+            }
+            $chests = json_decode((string)$p['chests'], true);
+            if (!is_array($chests)) {
+                $db->rollBack();
+                return [false, 'Dữ liệu rương nhân vật không hợp lệ'];
+            }
+            // Mỗi ô là object {expired, quantity, id}; ô trống quantity = 0
+            $slot = -1;
+            foreach ($chests as $i => $c) {
+                if (is_array($c) && (int)($c['quantity'] ?? 0) === 0) {
+                    $slot = $i;
+                    break;
+                }
+            }
+            if ($slot < 0) {
+                $db->rollBack();
+                return [false, 'Rương nhân vật đã đầy. Vui lòng dọn rương rồi nhận lại.'];
+            }
+            $chests[$slot] = ['expired' => -1, 'quantity' => $quantity, 'id' => $itemId];
+            $db->prepare('UPDATE players SET chests = ? WHERE id = ?')
+               ->execute([json_encode(array_values($chests)), $characterId]);
+            $db->commit();
+            return [true, 'Đã gửi vật phẩm vào rương nhân vật'];
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            return [false, 'Lỗi giao vật phẩm: ' . $e->getMessage()];
+        }
+    }
+
 }

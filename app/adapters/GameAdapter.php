@@ -37,4 +37,12 @@ interface GameAdapter
     /** Bảng xếp hạng: ['columns' => [nhãn cột...], 'rows' => [[giá trị...], ...]] */
     public function getRankings(PDO $db, int $limit = 50): array;
 
+    /** Tên vật phẩm theo item id (để webshop hiển thị + đối chiếu). null nếu không có */
+    public function getItemName(PDO $db, int $itemId): ?string;
+
+    /**
+     * Giao vật phẩm vào rương nhân vật (webshop). Bắt buộc nhân vật offline.
+     * Trả về [ok, message]
+     */
+    public function giveItem(PDO $db, string $characterId, int $itemId, int $quantity): array;
 }

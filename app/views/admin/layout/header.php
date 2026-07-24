@@ -20,8 +20,10 @@ $active = fn(string $p) => str_starts_with(parse_url($_SERVER['REQUEST_URI'], PH
     <a class="<?= $active('/admin/servers') ?>" href="<?= url('/admin/servers') ?>"><?= icon('server') ?>Server game</a>
     <a class="<?= $active('/admin/coin-packages') ?>" href="<?= url('/admin/coin-packages') ?>"><?= icon('wallet') ?>Gói nạp xu</a>
     <a class="<?= $active('/admin/exchange-packages') ?>" href="<?= url('/admin/exchange-packages') ?>"><?= icon('exchange') ?>Gói quy đổi</a>
+    <a class="<?= $active('/admin/shop') ?>" href="<?= url('/admin/shop') ?>"><?= icon('cart') ?>Webshop</a>
     <a class="<?= $active('/admin/orders') ?>" href="<?= url('/admin/orders') ?>"><?= icon('receipt') ?>Đơn nạp</a>
     <a class="<?= $active('/admin/exchanges') ?>" href="<?= url('/admin/exchanges') ?>"><?= icon('scroll') ?>Lịch sử quy đổi</a>
+    <a class="<?= $active('/admin/shop-orders') ?>" href="<?= url('/admin/shop-orders') ?>"><?= icon('receipt') ?>Lịch sử webshop</a>
     <a class="<?= $active('/admin/users') ?>" href="<?= url('/admin/users') ?>"><?= icon('users') ?>Người dùng</a>
     <a class="<?= $active('/admin/news') ?>" href="<?= url('/admin/news') ?>"><?= icon('news') ?>Tin tức / Sự kiện</a>
     <a class="<?= $active('/admin/banners') ?>" href="<?= url('/admin/banners') ?>"><?= icon('image') ?>Banner</a>

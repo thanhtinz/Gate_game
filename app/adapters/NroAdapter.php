@@ -165,4 +165,70 @@ class NroAdapter implements GameAdapter
         return ['columns' => ['Nhân vật', 'Sức mạnh', 'Đệ tử', 'Tổng'], 'rows' => $rows];
     }
 
+    public function getItemName(PDO $db, int $itemId): ?string
+    {
+        try {
+            $st = $db->prepare('SELECT NAME FROM item_template WHERE id = ? LIMIT 1');
+            $st->execute([$itemId]);
+            $row = $st->fetch(PDO::FETCH_ASSOC);
+            if (!$row) {
+                return null;
+            }
+            return (string)$row['NAME'];
+        } catch (Throwable $e) {
+            return null;
+        }
+    }
+
+    public function giveItem(PDO $db, string $characterId, int $itemId, int $quantity): array
+    {
+        if ($quantity < 1) {
+            return [false, 'Số lượng không hợp lệ'];
+        }
+        try {
+            $db->beginTransaction();
+            $st = $db->prepare('SELECT id, items_bag FROM player WHERE id = ? LIMIT 1 FOR UPDATE');
+            $st->execute([$characterId]);
+            $p = $st->fetch(PDO::FETCH_ASSOC);
+            if (!$p) {
+                $db->rollBack();
+                return [false, 'Không tìm thấy nhân vật'];
+            }
+            // Server NRO ghi đè túi đồ khi lưu -> bắt buộc offline
+            if ($this->isCharacterOnline($db, $characterId)) {
+                $db->rollBack();
+                return [false, 'Nhân vật đang online. Vui lòng thoát game rồi nhận vật phẩm lại.'];
+            }
+            $bag = json_decode((string)$p['items_bag'], true);
+            if (!is_array($bag)) {
+                $db->rollBack();
+                return [false, 'Dữ liệu túi đồ nhân vật không hợp lệ'];
+            }
+            // Mỗi ô là 1 chuỗi JSON [tempId, quantity, "optionsJson", createTime]; ô trống tempId = -1
+            $slot = -1;
+            foreach ($bag as $i => $raw) {
+                $item = json_decode((string)$raw, true);
+                if (is_array($item) && isset($item[0]) && (int)$item[0] === -1) {
+                    $slot = $i;
+                    break;
+                }
+            }
+            if ($slot < 0) {
+                $db->rollBack();
+                return [false, 'Túi đồ nhân vật đã đầy. Vui lòng dọn túi rồi nhận lại.'];
+            }
+            $createTime = (int)round(microtime(true) * 1000);
+            $bag[$slot] = json_encode([$itemId, $quantity, '[]', $createTime]);
+            $db->prepare('UPDATE player SET items_bag = ? WHERE id = ?')
+               ->execute([json_encode($bag), $characterId]);
+            $db->commit();
+            return [true, 'Đã gửi vật phẩm vào túi đồ nhân vật'];
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            return [false, 'Lỗi giao vật phẩm: ' . $e->getMessage()];
+        }
+    }
+
 }
