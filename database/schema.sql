@@ -196,6 +196,41 @@ CREATE TABLE IF NOT EXISTS `sepay_logs` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Webshop: sản phẩm bán bằng xu, giao thẳng vật phẩm vào nhân vật trong game
+CREATE TABLE IF NOT EXISTS `shop_products` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `game_id` INT NOT NULL,
+  `name` VARCHAR(120) NOT NULL,               -- tên hiển thị (mặc định lấy theo tên vật phẩm trong game)
+  `item_id` INT NOT NULL,                     -- id vật phẩm trong DB game (item_template NRO / items Avatar)
+  `item_quantity` INT NOT NULL DEFAULT 1,     -- số lượng giao mỗi lần mua
+  `xu_cost` INT NOT NULL,                     -- giá bằng xu
+  `image` VARCHAR(255) DEFAULT NULL,          -- ảnh sản phẩm admin upload
+  `description` VARCHAR(255) DEFAULT NULL,
+  `stock` INT NOT NULL DEFAULT -1,            -- -1 = không giới hạn; >=0 = còn lại
+  `status` TINYINT NOT NULL DEFAULT 1,
+  `sort_order` INT NOT NULL DEFAULT 0,
+  FOREIGN KEY (`game_id`) REFERENCES `games`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Lịch sử mua webshop
+CREATE TABLE IF NOT EXISTS `shop_orders` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `game_id` INT NOT NULL,
+  `server_id` INT NOT NULL,
+  `product_id` INT NOT NULL,
+  `product_name` VARCHAR(120) NOT NULL,
+  `item_id` INT NOT NULL,
+  `item_quantity` INT NOT NULL,
+  `character_id` VARCHAR(30) NOT NULL,
+  `character_name` VARCHAR(50) NOT NULL,
+  `xu_cost` INT NOT NULL,
+  `status` ENUM('completed','failed') NOT NULL,
+  `message` VARCHAR(255) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- =====================================================
 -- DỮ LIỆU MẶC ĐỊNH
 -- =====================================================

@@ -163,6 +163,30 @@ select[disabled] { opacity: .55; }
 .package-card.selectable input { position: absolute; top: 12px; right: 12px; accent-color: var(--accent); width: 18px; height: 18px; }
 .package-card.selectable:has(input:checked) { border-color: var(--accent); background: rgba(79,140,255,.08); }
 
+/* Webshop */
+.shop-filter { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+.shop-filter .chip { cursor: pointer; }
+.shop-filter .chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin: 8px 0 4px; }
+.shop-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; overflow: hidden; cursor: pointer; transition: .15s; display: flex; flex-direction: column; }
+.shop-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.shop-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,140,255,.18); }
+.shop-card-img { position: relative; aspect-ratio: 1 / 1; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
+.shop-card-img img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; padding: 10px; }
+.shop-card-noimg { color: var(--muted); }
+.shop-card-noimg .ic { width: 40px; height: 40px; }
+.shop-card-qty { position: absolute; top: 8px; right: 8px; background: var(--accent2); color: #1b1300; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.shop-card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.shop-card-game { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.shop-card-name { font-size: 15px; margin: 0; }
+.shop-card-desc { font-size: 12px; color: var(--muted); margin: 0; }
+.shop-card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; }
+.shop-card-price { font-weight: 700; color: var(--accent2); display: inline-flex; align-items: center; gap: 4px; }
+.shop-card-price .ic { width: 16px; height: 16px; }
+.shop-card-stock { font-size: 12px; color: var(--muted); }
+.shop-buy-panel { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+.shop-buy-title { font-size: 17px; margin-bottom: 14px; }
+
 /* Order / QR */
 .order-flex { display: flex; gap: 26px; margin-top: 16px; flex-wrap: wrap; }
 .qr-side { flex: 0 0 240px; }

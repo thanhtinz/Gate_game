@@ -62,3 +62,31 @@ function admin_exchanges(): void
         'total' => $total,
     ]);
 }
+
+function admin_shop_orders(): void
+{
+    $page = max(1, (int)get('page', 1));
+    $perPage = 50;
+
+    $total = (int)(DB::one('SELECT COUNT(*) c FROM shop_orders')['c'] ?? 0);
+    $pages = max(1, (int)ceil($total / $perPage));
+    $page = min($page, $pages);
+    $offset = ($page - 1) * $perPage;
+
+    $orders = DB::all(
+        "SELECT so.*, u.username, g.name AS game_name, s.name AS server_name
+         FROM shop_orders so
+         JOIN users u ON u.id = so.user_id
+         LEFT JOIN games g ON g.id = so.game_id
+         LEFT JOIN game_servers s ON s.id = so.server_id
+         ORDER BY so.id DESC LIMIT $perPage OFFSET $offset"
+    );
+
+    admin_view('shop_orders', [
+        'title' => 'Lịch sử mua webshop',
+        'orders' => $orders,
+        'page' => $page,
+        'pages' => $pages,
+        'total' => $total,
+    ]);
+}

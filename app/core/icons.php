@@ -11,6 +11,7 @@ function icon(string $name, string $class = '', int $size = 20): string
             // Tiền tệ / nạp
             'wallet' => '<path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1"/><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H5a2 2 0 0 1-2-2Z"/><circle cx="16" cy="13" r="1.4"/>',
             'exchange' => '<path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/>',
+            'cart' => '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.1 12.2a1.5 1.5 0 0 0 1.5 1.3h9.1a1.5 1.5 0 0 0 1.5-1.2L21 7H5.2"/>',
             'gift' => '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/><path d="M12 8v13"/><path d="M12 8S10.5 4 8.5 4A2.5 2.5 0 0 0 8.5 9H12Z"/><path d="M12 8s1.5-4 3.5-4a2.5 2.5 0 0 1 0 5H12Z"/>',
             'trophy' => '<path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0Z"/><path d="M7 6H4v2a3 3 0 0 0 3 3"/><path d="M17 6h3v2a3 3 0 0 1-3 3"/>',
             'coin' => '<circle cx="12" cy="12" r="8"/><path d="M12 8v8"/><path d="M9.5 10.5a2.5 2 0 0 1 5 0c0 1.5-2.5 1.5-2.5 3"/>',
