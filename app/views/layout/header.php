@@ -8,6 +8,7 @@ $flash = flash_get();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
 <title><?= e(($title ?? '') ? $title . ' - ' . $siteName : $siteName) ?></title>
 <meta name="description" content="<?= e($metaDesc ?? Settings::get('site_desc')) ?>">
 <meta name="keywords" content="<?= e(Settings::get('site_keywords')) ?>">
@@ -32,6 +33,7 @@ $flash = flash_get();
       <a href="<?= url('/bxh') ?>"><?= icon('trophy') ?>Xếp hạng</a>
     </nav>
     <div class="header-user">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện"><?= icon('moon') ?></button>
       <?php if ($me): ?>
         <span class="user-xu"><?= icon('coin') ?> <?= number_vn($me['xu']) ?> xu</span>
         <a href="<?= url('/tai-khoan') ?>" class="btn btn-sm"><?= e($me['username']) ?></a>

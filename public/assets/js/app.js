@@ -149,12 +149,14 @@
             giftPreview.classList.remove('hidden');
             return;
           }
-          var html = '<div class="gift-msg ok">✅ Giftcode hợp lệ' + (res.description ? ' — ' + esc(res.description) : '') + '</div>';
+          var okIcon = '<svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>';
+          var giftIcon = '<svg class="ic" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/><path d="M12 8v13"/><path d="M12 8S10.5 4 8.5 4A2.5 2.5 0 0 0 8.5 9H12Z"/><path d="M12 8s1.5-4 3.5-4a2.5 2.5 0 0 1 0 5H12Z"/></svg>';
+          var html = '<div class="gift-msg ok">' + okIcon + ' Giftcode hợp lệ' + (res.description ? ' — ' + esc(res.description) : '') + '</div>';
           if (res.items && res.items.length) {
             html += '<div class="gift-items">';
             res.items.forEach(function (it) {
               html += '<div class="gift-item">' +
-                (it.icon ? '<img src="' + esc(it.icon) + '" alt="">' : '<span class="gift-item-emoji">🎁</span>') +
+                (it.icon ? '<img src="' + esc(it.icon) + '" alt="">' : '<span class="gift-item-emoji">' + giftIcon + '</span>') +
                 '<span class="gift-item-name">' + esc(it.name || '') + '</span>' +
                 (it.qty ? '<span class="gift-item-qty">x' + esc(it.qty) + '</span>' : '') +
                 '</div>';
@@ -194,3 +196,25 @@ document.addEventListener('click', function (e) {
   input.type = input.type === 'password' ? 'text' : 'password';
   btn.innerHTML = input.type === 'password' ? EYE : EYE_OFF;
 });
+
+/* Chuyển theme sáng/tối */
+(function () {
+  var ICON_MOON = '<svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>';
+  var ICON_SUN = '<svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>';
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  function current() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+  }
+  function render() {
+    // Hiện icon của theme sẽ chuyển sang
+    btn.innerHTML = current() === 'light' ? ICON_MOON : ICON_SUN;
+  }
+  render();
+  btn.addEventListener('click', function () {
+    var next = current() === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    render();
+  });
+})();

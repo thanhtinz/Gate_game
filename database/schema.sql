@@ -236,8 +236,8 @@ ON DUPLICATE KEY UPDATE `k` = `k`;
 
 -- 2 game mặc định (sửa lại thông tin trong admin)
 INSERT INTO `games` (`slug`,`name`,`adapter`,`short_desc`,`description`,`download_links`,`sort_order`) VALUES
-('ngoc-rong', 'Ngọc Rồng Online', 'nro', 'Game nhập vai 7 viên ngọc rồng', '<p>Đang cập nhật...</p>', '[]', 1),
-('avatar', 'Avatar 2D', 'avatar', 'Game nông trại - thời trang Avatar', '<p>Đang cập nhật...</p>', '[]', 2)
+('ngoc-rong', 'Ngọc Rồng Online', 'nro', 'Game nhập vai 7 viên ngọc rồng', '<p>Đang cập nhật...</p>', '[{"label":"Android APK","url":"#"},{"label":"iOS","url":"#"},{"label":"PC (Windows)","url":"#"}]', 1),
+('avatar', 'Avatar 2D', 'avatar', 'Game nông trại - thời trang Avatar', '<p>Đang cập nhật...</p>', '[{"label":"Android APK","url":"#"},{"label":"iOS","url":"#"}]', 2)
 ON DUPLICATE KEY UPDATE `slug` = `slug`;
 
 -- Server mẫu (sửa thông tin DB thật trong admin)

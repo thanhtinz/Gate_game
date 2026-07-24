@@ -283,3 +283,49 @@ select[disabled] { opacity: .55; }
 .pw-toggle { display: inline-flex; align-items: center; }
 .pw-toggle .ic { width: 20px; height: 20px; }
 .badge .ic { width: 13px; height: 13px; vertical-align: -0.13em; }
+
+/* ===== Theme sáng ===== */
+:root[data-theme="light"] {
+  --bg: #eef1f7;
+  --bg2: #ffffff;
+  --card: #ffffff;
+  --border: #dde3ee;
+  --text: #1b2233;
+  --muted: #5c6780;
+  --accent: #2f6fed;
+  --accent2: #c9820b;
+  --green: #1f9d57;
+  --red: #e23b4c;
+}
+:root[data-theme="light"] body { background: var(--bg); }
+:root[data-theme="light"] .site-header { box-shadow: 0 1px 0 rgba(0,0,0,.04); }
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .game-card,
+:root[data-theme="light"] .news-card,
+:root[data-theme="light"] .news-item,
+:root[data-theme="light"] .package-card,
+:root[data-theme="light"] .qa-item,
+:root[data-theme="light"] .chip { box-shadow: 0 1px 3px rgba(20,30,60,.06); }
+:root[data-theme="light"] .main-nav a:hover { background: #eef3fc; }
+:root[data-theme="light"] .content-html { color: #37415a; }
+:root[data-theme="light"] .alert-success { background: rgba(31,157,87,.10); color: #157a41; }
+:root[data-theme="light"] .alert-error { background: rgba(226,59,76,.10); color: #c02637; }
+:root[data-theme="light"] .alert-info { background: rgba(47,111,237,.10); color: #2559c4; }
+:root[data-theme="light"] .gift-msg.ok { background: rgba(31,157,87,.10); color: #157a41; }
+:root[data-theme="light"] .gift-msg.err { background: rgba(226,59,76,.10); color: #c02637; }
+:root[data-theme="light"] .gift-msg.warn { background: rgba(201,130,11,.12); color: #9a6300; }
+:root[data-theme="light"] .badge-completed { background: rgba(31,157,87,.14); color: #157a41; }
+:root[data-theme="light"] .badge-cancelled,
+:root[data-theme="light"] .badge-failed { background: rgba(226,59,76,.14); color: #c02637; }
+:root[data-theme="light"] .badge-pending { background: rgba(201,130,11,.16); color: #9a6300; }
+:root[data-theme="light"] .badge-news { background: rgba(47,111,237,.14); color: #2559c4; }
+:root[data-theme="light"] .auth-side { background: linear-gradient(160deg, rgba(47,111,237,.14), #f3f6fc), var(--bg2); }
+:root[data-theme="light"] .thumb-placeholder { color: var(--muted); }
+
+/* Nút chuyển theme */
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 34px; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 8px; cursor: pointer; padding: 0; }
+.theme-toggle:hover { filter: brightness(1.1); border-color: var(--accent); }
+.theme-toggle .ic { width: 18px; height: 18px; }
+:root[data-theme="light"] .btn-google { border-color: var(--border); box-shadow: 0 1px 2px rgba(20,30,60,.06); }
+:root[data-theme="light"] .auth-panel { box-shadow: 0 4px 24px rgba(20,30,60,.08); }
+:root[data-theme="light"] .auth-side { border-right-color: var(--border); }
